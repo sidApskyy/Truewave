@@ -2615,7 +2615,7 @@ const AnimatedCounter = ({
                 marginBottom: '24px',
                 color: isDarkMode ? '#ffffff' : '#09243F',
                 letterSpacing: '-0.03em',
-                background: 'linear-gradient(135deg, #FF8C42 0%, #FF6B6B 50%, #FFA500 100%)',
+                background: 'linear-gradient(135deg, #00D4FF 0%, #7B61FF 50%, #FF4ECD 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text'
@@ -3142,7 +3142,7 @@ const AnimatedCounter = ({
               marginBottom: '24px',
               color: isDarkMode ? 'white' : 'black',
               letterSpacing: '-0.03em',
-              background: 'linear-gradient(135deg, #FF8C42 0%, #FF6B6B 50%, #4ECDC4 100%)',
+              background: 'linear-gradient(135deg, #35F70A 0%, #00CB96 50%, #00E5AB 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text'
@@ -3376,7 +3376,7 @@ const AnimatedCounter = ({
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
-          filter: isDarkMode ? 'brightness(0.7)' : 'brightness(0.8)',
+          filter: isDarkMode ? 'brightness(0.7) saturate(1.5)' : 'brightness(0.8) saturate(1.5)',
           zIndex: -2
         }} />
         
@@ -3963,32 +3963,7 @@ const AnimatedCounter = ({
   }}
 >
 
-  {/* BIG GLOW */}
-
-  <div
-    style={{
-      position: 'absolute',
-
-      width: '420px',
-      height: '420px',
-
-      borderRadius: '50%',
-
-      background: `
-        radial-gradient(
-          circle,
-          rgba(238, 23, 245, 1),
-          transparent 70%
-        )
-      `,
-
-      filter: 'blur(90px)',
-
-      animation:
-        'pulseGlow 5s ease-in-out infinite'
-    }}
-  />
-
+  
   {/* GLASS CIRCLE */}
 
   <div
@@ -4181,7 +4156,7 @@ const AnimatedCounter = ({
 
 <section
   style={{
-    padding: '140px 24px',
+    padding: '60px 24px',
     position: 'relative',
     overflow: 'hidden',
     background: isDarkMode
@@ -4432,19 +4407,11 @@ const AnimatedCounter = ({
               background: isDarkMode
 
                 ? `
-                  linear-gradient(
-                    145deg,
-                    rgba(190, 67, 231, 0.94),
-                    rgba(150, 10, 175, 0.86)
-                  )
+                 linear-gradient(135deg, #885CFB 0%, #4F46EF 50%, #06B6D4 100%)
                 `
 
                 : `
-                  linear-gradient(
-                     145deg,
-                    rgba(39, 237, 230, 0.94),
-                    rgba(3, 218, 234, 0.86)
-                  )
+                 linear-gradient(135deg, #885CFB 0%, #4F46EF 50%, #06B6D4 100%)
                 `,
 
               backdropFilter: 'blur(40px)'
