@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #1f2937;
+            color: white;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        h1 {
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>TRUEWAVES TEST PAGE</h1>
+        <p>If you can see this page, the basic web server is working.</p>
+        <p>Current time: <span id="time"></span></p>
+        <p>Testing JavaScript functionality...</p>
+        <div id="react-test">Loading React test...</div>
+    </div>
+    
+    <script>
+        // Test basic JavaScript
+        document.getElementById('time').textContent = new Date().toLocaleString();
+        
+        // Test React by trying to create a simple element
+        setTimeout(() => {
+            const reactTest = document.getElementById('react-test');
+            if (reactTest) {
+                reactTest.innerHTML = '<div style="background-color: #3b82f6; color: white; padding: 10px; border-radius: 4px;">✅ React JavaScript Working!</div>';
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

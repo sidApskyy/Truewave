@@ -1,0 +1,31 @@
+/* Custom Font: FunnelDisplay-Bold */
+@font-face {
+  font-family: 'FunnelDisplay';
+  src: url('/assets/fonts/FunnelDisplay-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Apply font to titles and headings only */
+.funnel-display {
+  font-family: 'FunnelDisplay', 'Inter', system-ui, sans-serif !important;
+  font-weight: bold;
+}
+
+/* Apply to headings and titles only */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'FunnelDisplay', 'Inter', system-ui, sans-serif !important;
+  font-weight: bold;
+}
+
+/* Remove from body - use default font for regular text */
+body {
+  font-family: 'Inter', system-ui, sans-serif !important;
+}
+
+/* Apply to specific title classes */
+.title, .heading, .hero-title, .section-title {
+  font-family: 'FunnelDisplay', 'Inter', system-ui, sans-serif !important;
+  font-weight: bold;
+}

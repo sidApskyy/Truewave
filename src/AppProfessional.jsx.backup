@@ -1,0 +1,1839 @@
+import React, { useState, useEffect, useRef } from 'react';
+// import { motion } from 'framer-motion';
+
+const AppProfessional = () => {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [activeSection, setActiveSection] = useState('hero');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    company: '',
+    services: [],
+    message: '',
+    budget: '',
+    timeline: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  
+  const heroRef = useRef(null);
+  const servicesRef = useRef(null);
+  const testimonialsRef = useRef(null);
+  const contactRef = useRef(null);
+  const visionRef = useRef(null);
+  const particlesRef = useRef(null);
+
+  // Mouse tracking for parallax effects
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  // Scroll tracking
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+      
+      // Update active section based on scroll
+      const sections = [
+        { ref: heroRef, name: 'hero' },
+        { ref: servicesRef, name: 'services' },
+        { ref: testimonialsRef, name: 'testimonials' },
+        { ref: contactRef, name: 'contact' }
+      ];
+      
+      for (const section of sections) {
+        if (section.ref.current) {
+          const rect = section.ref.current.getBoundingClientRect();
+          if (rect.top <= 100 && rect.bottom >= 100) {
+            setActiveSection(section.name);
+            break;
+          }
+        }
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Theme management
+  useEffect(() => {
+    try {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        setIsDarkMode(true);
+      }
+    } catch (error) {
+      console.error('Theme error:', error);
+    }
+  }, []);
+
+  useEffect(() => {
+    try {
+      if (isDarkMode) {
+        document.documentElement.classList.add('dark');
+        document.body.style.backgroundColor = '#0a0a0a';
+      } else {
+        document.documentElement.classList.remove('dark');
+        document.body.style.backgroundColor = '#ffffff';
+      }
+      localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+    } catch (error) {
+      console.error('Theme application error:', error);
+    }
+  }, [isDarkMode]);
+
+  // Minimal setup for debugging
+  useEffect(() => {
+    console.log('AppProfessional component mounted');
+  }, []);
+
+  // Smooth scroll to section
+  const scrollToSection = (sectionRef) => {
+    sectionRef.current?.scrollIntoView({ behavior: 'smooth' });
+    setIsMenuOpen(false);
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    setIsSubmitting(false);
+    setShowSuccess(true);
+    setFormData({
+      name: '',
+      email: '',
+      company: '',
+      services: [],
+      message: '',
+      budget: '',
+      timeline: ''
+    });
+    
+    setTimeout(() => setShowSuccess(false), 5000);
+  };
+
+  const services = [
+    {
+      title: "Content Syndication",
+      description: "Strategic content distribution to targeted B2B audiences",
+      icon: "https://img.icons8.com/fluency/48/document.png",
+      features: ["Multi-channel distribution", "100% opt-in leads", "Real-time analytics"],
+      color: "#FF6B6B"
+    },
+    {
+      title: "Marketing Qualified Leads",
+      description: "Mid-funnel prospects with demonstrated engagement",
+      icon: "https://img.icons8.com/fluency/48/user-group.png",
+      features: ["Lead scoring", "Progressive profiling", "CRM integration"],
+      color: "#FF8C42"
+    },
+    {
+      title: "Sales Qualified Leads",
+      description: "Bottom-of-funnel prospects ready to convert",
+      icon: "https://img.icons8.com/fluency/48/currency-dollar-circle.png",
+      features: ["High-intent buyers", "Direct sales handoff", "Conversion tracking"],
+      color: "#FFA500"
+    },
+    {
+      title: "Account-Based Marketing",
+      description: "Targeted campaigns for high-value accounts",
+      icon: "https://img.icons8.com/fluency/48/target.png",
+      features: ["Custom account research", "Personalized outreach", "ROI tracking"],
+      color: "#FFB347"
+    }
+  ];
+
+  const testimonials = [
+    {
+      name: "Alexandra Chen",
+      company: "TechVision Inc.",
+      position: "VP Marketing",
+      content: "TrueWaveites transformed our lead generation strategy. The quality of leads and conversion rates exceeded our expectations by 300%.",
+      rating: 5,
+      avatar: "AC"
+    },
+    {
+      name: "Marcus Williams",
+      company: "Global Solutions Ltd",
+      position: "CEO",
+      content: "Working with TrueWaveites has been a game-changer. Their data-driven approach and compliance standards are unmatched in the industry.",
+      rating: 5,
+      avatar: "MW"
+    },
+    {
+      name: "Sophia Rodriguez",
+      company: "Innovation Labs",
+      position: "Sales Director",
+      content: "The ROI we've achieved with TrueWaveites is remarkable. Their team understands B2B marketing like no other agency we've worked with.",
+      rating: 5,
+      avatar: "SR"
+    }
+  ];
+
+  const stats = [
+    { value: 2012, label: "Founded", suffix: "", color: "#FF6B6B" },
+    { value: 15000, label: "Leads Generated", suffix: "+", color: "#FF8C42" },
+    { value: 750, label: "Happy Clients", suffix: "+", color: "#FFA500" },
+    { value: 98, label: "Satisfaction", suffix: "%", color: "#FFB347" }
+  ];
+
+  const AnimatedCounter = ({ target, suffix = "", duration = 2000, color }) => {
+    const [count, setCount] = useState(0);
+    const [isVisible, setIsVisible] = useState(false);
+    const counterRef = useRef(null);
+
+    useEffect(() => {
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting && !isVisible) {
+            setIsVisible(true);
+          }
+        },
+        { threshold: 0.5 }
+      );
+
+      if (counterRef.current) {
+        observer.observe(counterRef.current);
+      }
+
+      return () => observer.disconnect();
+    }, [isVisible]);
+
+    useEffect(() => {
+      if (!isVisible) return;
+
+      const increment = target / (duration / 16);
+      let current = 0;
+
+      const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+          setCount(target);
+          clearInterval(timer);
+        } else {
+          setCount(Math.floor(current));
+        }
+      }, 16);
+
+      return () => clearInterval(timer);
+    }, [isVisible, target, duration]);
+
+    return (
+      <div ref={counterRef} style={{ color }}>
+        <span style={{ fontSize: '3rem', fontWeight: 'bold' }}>
+          {count.toLocaleString()}{suffix}
+        </span>
+      </div>
+    );
+  };
+
+  return (
+    <div style={{
+      backgroundColor: '#000000',
+      color: '#ffffff',
+      fontFamily: 'Arial, sans-serif',
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      textAlign: 'center',
+      padding: '20px'
+    }}>
+      <div>
+        <h1 style={{ fontSize: '3rem', marginBottom: '20px' }}>
+          TOP B2B DEMAND GENERATION COMPANY
+        </h1>
+        <p style={{ fontSize: '1.5rem', marginBottom: '20px' }}>
+          Engage-Nature-Convert!
+        </p>
+        <p>
+          A demand generation company that runs on a data-driven approach and omnichannel media expertise
+        </p>
+      </div>
+    </div>
+  );
+        right: 0,
+        zIndex: 1000,
+        padding: '20px 0',
+        backgroundColor: isDarkMode ? 'rgba(10,10,10,0.95)' : 'rgba(255,255,255,0.95)',
+        backdropFilter: 'blur(20px)',
+        borderBottom: `1px solid ${isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
+        transition: 'all 0.3s ease'
+      }}>
+        <div style={{
+          maxWidth: '1200px',
+          margin: '0 auto',
+          padding: '0 20px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}>
+          {/* Logo */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            cursor: 'pointer'
+          }}>
+            <div style={{
+              width: '40px',
+              height: '40px',
+              background: 'linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 100%)',
+              borderRadius: '12px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontWeight: 'bold',
+              color: 'white',
+              fontSize: '1.2rem',
+              boxShadow: '0 8px 32px rgba(255,107,107,0.3)',
+              transform: `rotate(${scrollY * 0.1}deg)`,
+              transition: 'transform 0.3s ease'
+            }}>
+              T
+            </div>
+            <h1 style={{
+              fontSize: '1.5rem',
+              fontWeight: '700',
+              margin: 0,
+              color: '#FF6B6B'
+            }}>
+              TrueWaveites
+            </h1>
+          </div>
+
+          {/* Desktop Navigation */}
+          <nav style={{
+            display: { xs: 'none', md: 'flex' },
+            gap: '40px',
+            alignItems: 'center'
+          }}>
+            {[
+              { name: 'Services', ref: servicesRef },
+              { name: 'Testimonials', ref: testimonialsRef },
+              { name: 'Contact', ref: contactRef }
+            ].map((item) => (
+              <button
+                key={item.name}
+                onClick={() => scrollToSection(item.ref)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: activeSection === item.name.toLowerCase() ? '#FF6B6B' : (isDarkMode ? '#ffffff' : '#1a1a1a'),
+                  fontSize: '1rem',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                  position: 'relative',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.color = '#FF6B6B';
+                  e.target.style.transform = 'translateY(-2px)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.color = activeSection === item.name.toLowerCase() ? '#FF6B6B' : (isDarkMode ? '#ffffff' : '#1a1a1a');
+                  e.target.style.transform = 'translateY(0)';
+                }}
+              >
+                {item.name}
+                {activeSection === item.name.toLowerCase() && (
+                  <div style={{
+                    position: 'absolute',
+                    bottom: '-8px',
+                    left: 0,
+                    right: 0,
+                    height: '2px',
+                    backgroundColor: '#FF6B6B',
+                    borderRadius: '1px'
+                  }} />
+                )}
+              </button>
+            ))}
+            
+            <button
+              onClick={() => setIsDarkMode(!isDarkMode)}
+              style={{
+                background: '#FF6B6B',
+                border: 'none',
+                color: 'white',
+                padding: '10px 20px',
+                borderRadius: '25px',
+                fontSize: '0.9rem',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                boxShadow: '0 4px 20px rgba(255,107,107,0.3)'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.transform = 'translateY(-2px) scale(1.05)';
+                e.target.style.boxShadow = '0 8px 30px rgba(255,107,107,0.4)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.transform = 'translateY(0) scale(1)';
+                e.target.style.boxShadow = '0 4px 20px rgba(255,107,107,0.3)';
+              }}
+            >
+              {isDarkMode ? 'Light' : 'Dark'}
+            </button>
+          </nav>
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            style={{
+              display: { xs: 'flex', md: 'none' },
+              flexDirection: 'column',
+              gap: '4px',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer'
+            }}
+          >
+            <div style={{
+              width: '25px',
+              height: '3px',
+              backgroundColor: isDarkMode ? '#ffffff' : '#1a1a1a',
+              transform: isMenuOpen ? 'rotate(45deg) translate(5px, 5px)' : 'none',
+              transition: 'all 0.3s ease'
+            }} />
+            <div style={{
+              width: '25px',
+              height: '3px',
+              backgroundColor: isDarkMode ? '#ffffff' : '#1a1a1a',
+              opacity: isMenuOpen ? 0 : 1,
+              transition: 'all 0.3s ease'
+            }} />
+            <div style={{
+              width: '25px',
+              height: '3px',
+              backgroundColor: isDarkMode ? '#ffffff' : '#1a1a1a',
+              transform: isMenuOpen ? 'rotate(-45deg) translate(7px, -6px)' : 'none',
+              transition: 'all 0.3s ease'
+            }} />
+          </button>
+        </div>
+
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <div style={{
+            position: 'absolute',
+            top: '100%',
+            left: 0,
+            right: 0,
+            backgroundColor: isDarkMode ? 'rgba(10,10,10,0.98)' : 'rgba(255,255,255,0.98)',
+            backdropFilter: 'blur(20px)',
+            borderBottom: `1px solid ${isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
+            padding: '20px'
+          }}>
+            {[
+              { name: 'Services', ref: servicesRef },
+              { name: 'Testimonials', ref: testimonialsRef },
+              { name: 'Contact', ref: contactRef }
+            ].map((item) => (
+              <button
+                key={item.name}
+                onClick={() => scrollToSection(item.ref)}
+                style={{
+                  display: 'block',
+                  width: '100%',
+                  textAlign: 'left',
+                  padding: '15px 20px',
+                  background: 'none',
+                  border: 'none',
+                  color: isDarkMode ? '#ffffff' : '#1a1a1a',
+                  fontSize: '1rem',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease'
+                }}
+              >
+                {item.name}
+              </button>
+            ))}
+          </div>
+        )}
+      </header>
+
+      {/* Simple Hero Section for Debugging */}
+      <section className="relative min-h-screen flex items-center justify-center bg-black" ref={heroRef}>
+        <div className="text-center text-white px-5 max-w-4xl mx-auto">
+          <h1 className="text-4xl md:text-6xl font-black mb-6 text-white">
+            TOP B2B DEMAND GENERATION COMPANY
+          </h1>
+          <h2 className="text-2xl md:text-4xl font-bold text-orange-400 mb-8">
+            Engage-Nature-Convert!
+          </h2>
+          <p className="text-lg md:text-xl text-white/80">
+            A demand generation company that runs on a data-driven approach and omnichannel media expertise
+          </p>
+        </div>
+      </section>
+
+      {/* Premium Vision & Mission Section with Advanced Animations */}
+      <section className="py-24 px-5 relative z-10 bg-gradient-to-br from-orange-50/3 via-transparent to-transparent" ref={visionRef}>
+        <div className="max-w-7xl mx-auto">
+          {/* Section Header with Text Reveal */}
+          <div 
+            className="text-center mb-20 overflow-hidden"
+            transition={{ duration: 1.2, ease: "power3.out" }}
+            viewport={{ once: true, amount: 0.3 }}
+          >
+            <h2 className="text-5xl md:text-6xl lg:text-7xl font-black text-orange-500">
+              {['OUR', 'VISION', '&', 'MISSION'].map((word, i) => (
+                <motion.span
+                  key={word}
+                  className="inline-block mx-1"
+                  initial={{ y: 100, opacity: 0 }}
+                  whileInView={{ y: 0, opacity: 1 }}
+                  transition={{ 
+                    duration: 0.6, 
+                    delay: i * 0.1, 
+                    ease: "power3.out" 
+                  }}
+                  viewport={{ once: true, amount: 0.3 }}
+                >
+                  {word}
+                </motion.span>
+              ))}
+            </h2>
+          </motion.div>
+          
+          {/* Premium Card Grid */}
+          <motion.div 
+            className="grid md:grid-cols-2 gap-12 max-w-5xl mx-auto"
+            initial={{ opacity: 0, y: 80 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.2, delay: 0.3, ease: "power3.out" }}
+            viewport={{ once: true, amount: 0.3 }}
+          >
+            {/* Vision Card - Premium */}
+            <motion.div
+              className="group p-10 bg-gradient-to-br from-white/10 via-orange-50/5 to-white/5 backdrop-blur-xl rounded-3xl border border-orange-200/20 shadow-2xl hover:shadow-3xl transition-all duration-500 cursor-pointer"
+              initial={{ opacity: 0, y: 60, scale: 0.95 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.5, ease: "power3.out" }}
+              viewport={{ once: true, amount: 0.3 }}
+              whileHover={{ 
+                y: -15, 
+                scale: 1.03,
+                boxShadow: "0 30px 60px rgba(255, 107, 107, 0.25)",
+                borderColor: "rgba(255, 107, 107, 0.3)"
+              }}
+              style={{ willChange: 'transform' }}
+            >
+              {/* Premium Icon with Animation */}
+              <motion.div 
+                className="flex items-center mb-6"
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.7, ease: "power3.out" }}
+                viewport={{ once: true, amount: 0.3 }}
+              >
+                <motion.div 
+                  className="w-14 h-14 bg-gradient-to-br from-orange-500 to-orange-400 rounded-2xl flex items-center justify-center shadow-xl group-hover:shadow-2xl transition-all duration-300"
+                  whileHover={{ rotate: 360, scale: 1.1 }}
+                  transition={{ duration: 0.6, ease: "power3.out" }}
+                >
+                  <svg className="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor"/>
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2 17L12 22L22 17" stroke="currentColor"/>
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2 12L12 17L22 12" stroke="currentColor"/>
+                  </svg>
+                </motion.div>
+                <motion.h3 
+                  className="text-2xl md:text-3xl font-black text-orange-500 ml-4"
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, delay: 0.8, ease: "power3.out" }}
+                  viewport={{ once: true, amount: 0.3 }}
+                >
+                  OUR VISION
+                </motion.h3>
+              </motion.div>
+              
+              {/* Premium Text Content */}
+              <motion.p 
+                className="text-lg md:text-xl leading-relaxed text-gray-700 dark:text-gray-300 font-light"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.9, ease: "power3.out" }}
+                viewport={{ once: true, amount: 0.3 }}
+              >
+                Helping businesses achieve sustainable growth through custom strategies, latest technologies, exceptional service, and measurable results.
+              </motion.p>
+            </motion.div>
+
+            {/* Mission Card - Premium */}
+            <motion.div
+              className="group p-10 bg-gradient-to-br from-white/10 via-orange-50/5 to-white/5 backdrop-blur-xl rounded-3xl border border-orange-200/20 shadow-2xl hover:shadow-3xl transition-all duration-500 cursor-pointer"
+              initial={{ opacity: 0, y: 60, scale: 0.95 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.7, ease: "power3.out" }}
+              viewport={{ once: true, amount: 0.3 }}
+              whileHover={{ 
+                y: -15, 
+                scale: 1.03,
+                boxShadow: "0 30px 60px rgba(255, 140, 66, 0.25)",
+                borderColor: "rgba(255, 140, 66, 0.3)"
+              }}
+              style={{ willChange: 'transform' }}
+            >
+              {/* Premium Icon with Animation */}
+              <motion.div 
+                className="flex items-center mb-6"
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.9, ease: "power3.out" }}
+                viewport={{ once: true, amount: 0.3 }}
+              >
+                <motion.div 
+                  className="w-14 h-14 bg-gradient-to-br from-orange-400 to-orange-300 rounded-2xl flex items-center justify-center shadow-xl group-hover:shadow-2xl transition-all duration-300"
+                  whileHover={{ rotate: -360, scale: 1.1 }}
+                  transition={{ duration: 0.6, ease: "power3.out" }}
+                >
+                  <svg className="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 16V8A2 2 0 0 0 19 6H5A2 2 0 0 0 3 8V16" stroke="currentColor"/>
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10H21" stroke="currentColor"/>
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 16V22" stroke="currentColor"/>
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 22H16" stroke="currentColor"/>
+                    <circle cx="9" cy="12" r="1" fill="currentColor"/>
+                    <circle cx="15" cy="12" r="1" fill="currentColor"/>
+                  </svg>
+                </motion.div>
+                <motion.h3 
+                  className="text-2xl md:text-3xl font-black text-orange-400 ml-4"
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, delay: 1.0, ease: "power3.out" }}
+                  viewport={{ once: true, amount: 0.3 }}
+                >
+                  OUR MISSION
+                </motion.h3>
+              </motion.div>
+              
+              {/* Premium Text Content */}
+              <motion.p 
+                className="text-lg md:text-xl leading-relaxed text-gray-700 dark:text-gray-300 font-light"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 1.1, ease: "power3.out" }}
+                viewport={{ once: true, amount: 0.3 }}
+              >
+                Empowering clients to connect with right prospects at the precise buying moment, staying ahead of competition through partnership and value.
+              </motion.p>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Statistics Counter Section */}
+      <section style={{
+        padding: '80px 20px',
+        position: 'relative',
+        zIndex: 1,
+        backgroundColor: isDarkMode ? 'rgba(255,255,255,0.02)' : 'rgba(255,107,107,0.03)'
+      }}>
+        <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+            gap: '40px',
+            textAlign: 'center'
+          }}>
+            {/* Leads Delivered Counter */}
+            <div style={{
+              padding: '30px',
+              background: 'linear-gradient(135deg, rgba(255,107,107,0.1) 0%, rgba(255,107,107,0.05) 100%)',
+              borderRadius: '20px',
+              border: '1px solid rgba(255,107,107,0.2)',
+              backdropFilter: 'blur(10px)',
+              boxShadow: '0 10px 30px rgba(255,107,107,0.15)',
+              transition: 'all 0.3s ease',
+              animation: 'slideInPopup 0.8s ease-out 0.2s both',
+              transform: 'scale(0)',
+              animationFillMode: 'both'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.transform = 'translateY(-5px) scale(1.02)';
+              e.target.style.boxShadow = '0 15px 40px rgba(255,107,107,0.25)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.transform = 'translateY(0) scale(1)';
+              e.target.style.boxShadow = '0 10px 30px rgba(255,107,107,0.15)';
+            }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: '15px'
+              }}>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" style={{ color: '#FF6B6B', marginRight: '10px' }}>
+                  <path d="M16 21V5A2 2 0 0 0 14 3H10A2 2 0 0 0 8 5V21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M2 17L12 22L22 17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M12 16V15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M14 17V15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                <div style={{
+                  fontSize: 'clamp(2.5rem, 5vw, 3.5rem)',
+                  fontWeight: '800',
+                  color: '#FF6B6B',
+                  textShadow: '0 4px 20px rgba(255,107,107,0.3)',
+                  display: 'flex',
+                  alignItems: 'baseline'
+                }}>
+                  <AnimatedCounter target={70} suffix="" color="#FF6B6B" />
+                  <span style={{
+                    fontSize: 'clamp(1.5rem, 3vw, 2rem)',
+                    fontWeight: '700',
+                    marginLeft: '5px'
+                  }}>
+                    M+
+                  </span>
+                </div>
+              </div>
+              <h4 style={{
+                fontSize: 'clamp(1rem, 2vw, 1.3rem)',
+                fontWeight: '600',
+                color: isDarkMode ? '#ffffff' : '#333333',
+                margin: '0',
+                lineHeight: '1.4'
+              }}>
+                Leads Delivered
+                <br />
+                every Month
+              </h4>
+            </div>
+
+            {/* Happy Clients Counter */}
+            <div style={{
+              padding: '30px',
+              background: 'linear-gradient(135deg, rgba(255,140,66,0.1) 0%, rgba(255,140,66,0.05) 100%)',
+              borderRadius: '20px',
+              border: '1px solid rgba(255,140,66,0.2)',
+              backdropFilter: 'blur(10px)',
+              boxShadow: '0 10px 30px rgba(255,140,66,0.15)',
+              transition: 'all 0.3s ease',
+              animation: 'slideInPopup 0.8s ease-out 0.4s both',
+              transform: 'scale(0)',
+              animationFillMode: 'both'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.transform = 'translateY(-5px) scale(1.02)';
+              e.target.style.boxShadow = '0 15px 40px rgba(255,140,66,0.25)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.transform = 'translateY(0) scale(1)';
+              e.target.style.boxShadow = '0 10px 30px rgba(255,140,66,0.15)';
+            }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: '15px'
+              }}>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" style={{ color: '#FF8C42', marginRight: '10px' }}>
+                  <path d="M17 21V19A4 4 0 0 0 13 15H9A4 4 0 0 0 5 19V21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <circle cx="9" cy="7" r="4" fill="currentColor"/>
+                  <path d="M23 21V19A4 4 0 0 0 19 15H18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <circle cx="20" cy="7" r="4" fill="currentColor"/>
+                </svg>
+                <div style={{
+                  fontSize: 'clamp(2.5rem, 5vw, 3.5rem)',
+                  fontWeight: '800',
+                  color: '#FF8C42',
+                  textShadow: '0 4px 20px rgba(255,140,66,0.3)',
+                  display: 'flex',
+                  alignItems: 'baseline'
+                }}>
+                  <AnimatedCounter target={100} suffix="" color="#FF8C42" />
+                  <span style={{
+                    fontSize: 'clamp(1.5rem, 3vw, 2rem)',
+                    fontWeight: '700',
+                    marginLeft: '5px'
+                  }}>
+                    K+
+                  </span>
+                </div>
+              </div>
+              <h4 style={{
+                fontSize: 'clamp(1rem, 2vw, 1.3rem)',
+                fontWeight: '600',
+                color: isDarkMode ? '#ffffff' : '#333333',
+                margin: '0',
+                lineHeight: '1.4'
+              }}>
+                Happy Clients
+              </h4>
+            </div>
+
+            {/* Total Counter */}
+            <div style={{
+              padding: '30px',
+              background: 'linear-gradient(135deg, rgba(255,165,0,0.1) 0%, rgba(255,165,0,0.05) 100%)',
+              borderRadius: '20px',
+              border: '1px solid rgba(255,165,0,0.2)',
+              backdropFilter: 'blur(10px)',
+              boxShadow: '0 10px 30px rgba(255,165,0,0.15)',
+              transition: 'all 0.3s ease',
+              animation: 'slideInPopup 0.8s ease-out 0.6s both',
+              transform: 'scale(0)',
+              animationFillMode: 'both'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.transform = 'translateY(-5px) scale(1.02)';
+              e.target.style.boxShadow = '0 15px 40px rgba(255,165,0,0.25)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.transform = 'translateY(0) scale(1)';
+              e.target.style.boxShadow = '0 10px 30px rgba(255,165,0,0.15)';
+            }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: '15px'
+              }}>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" style={{ color: '#FFA500', marginRight: '10px' }}>
+                  <path d="M13 2L3 14H12L11 22L21 12H12L13 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                <div style={{
+                  fontSize: 'clamp(2.5rem, 5vw, 3.5rem)',
+                  fontWeight: '800',
+                  color: '#FFA500',
+                  textShadow: '0 4px 20px rgba(255,165,0,0.3)',
+                  display: 'flex',
+                  alignItems: 'baseline'
+                }}>
+                  <AnimatedCounter target={150} suffix="" color="#FFA500" />
+                  <span style={{
+                    fontSize: 'clamp(1.5rem, 3vw, 2rem)',
+                    fontWeight: '700',
+                    marginLeft: '5px'
+                  }}>
+                    +
+                  </span>
+                </div>
+              </div>
+              <h4 style={{
+                fontSize: 'clamp(1rem, 2vw, 1.3rem)',
+                fontWeight: '600',
+                color: isDarkMode ? '#ffffff' : '#333333',
+                margin: '0',
+                lineHeight: '1.4'
+              }}>
+                Projects
+                <br />
+                Completed
+              </h4>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* About Us Section - Professional & Eye-Catching */}
+      <section style={{
+        padding: '80px 20px',
+        position: 'relative',
+        zIndex: 1,
+        backgroundColor: isDarkMode ? 'rgba(255,255,255,0.02)' : 'rgba(255,107,107,0.02)'
+      }}>
+        <div style={{ maxWidth: '900px', margin: '0 auto', textAlign: 'center' }}>
+          <div style={{
+            marginBottom: '50px',
+            animation: 'fadeInUp 1s ease-out both'
+          }}>
+            <h2 style={{
+              fontSize: 'clamp(2.5rem, 5vw, 3.5rem)',
+              fontWeight: '800',
+              marginBottom: '20px',
+              color: '#FF6B6B',
+              textShadow: '0 4px 20px rgba(255,107,107,0.3)',
+              animation: 'slideInLeft 1.2s ease-out 0.3s both'
+            }}>
+              About Us
+            </h2>
+            <h3 style={{
+              fontSize: 'clamp(1.8rem, 4vw, 2.2rem)',
+              fontWeight: '700',
+              marginBottom: '30px',
+              background: 'linear-gradient(135deg, #FF6B6B 0%, #FF8C42 50%, #FFA500 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              animation: 'slideInRight 1.2s ease-out 0.5s both',
+              display: 'inline-block'
+            }}>
+              The Leading B2B Marketing Agency
+            </h3>
+          </div>
+          
+          {/* Side by Side Content and Video */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: '40px',
+            alignItems: 'center',
+            marginBottom: '40px'
+          }}>
+            {/* Content Card */}
+            <div style={{
+              padding: '40px',
+              background: 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)',
+              borderRadius: '20px',
+              border: '1px solid rgba(255,107,107,0.2)',
+              backdropFilter: 'blur(10px)',
+              boxShadow: '0 15px 35px rgba(255,107,107,0.15)',
+              animation: 'slideInPopup 1s ease-out 0.7s both',
+              transform: 'scale(0)',
+              animationFillMode: 'both',
+              transition: 'all 0.3s ease',
+              textAlign: 'left'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.transform = 'translateY(-8px) scale(1.02)';
+              e.target.style.boxShadow = '0 25px 50px rgba(255,107,107,0.25)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.transform = 'translateY(0) scale(1)';
+              e.target.style.boxShadow = '0 15px 35px rgba(255,107,107,0.15)';
+            }}>
+              <div style={{
+                fontSize: 'clamp(1rem, 2vw, 1.2rem)',
+                lineHeight: '1.8',
+                color: isDarkMode ? '#ffffff' : '#333333',
+                fontWeight: '400',
+                position: 'relative',
+                animation: 'fadeInUp 1s ease-out 1s both'
+              }}>
+                <p style={{
+                  margin: '0 0 20px 0',
+                  animation: 'slideInLeft 1s ease-out 1.2s both'
+                }}>
+                  At TrueWaveItes, our vision as a B2B demand generation company is to help businesses achieve sustainable growth by generating high-quality leads and nurturing them through every stage of sales funnel.
+                </p>
+                <p style={{
+                  margin: '0',
+                  animation: 'slideInRight 1s ease-out 1.4s both'
+                }}>
+                  We aim to be a trusted partner for businesses looking to improve their online presence, increase brand awareness, and drive more traffic to their website.
+                </p>
+                
+                {/* Professional decorative element */}
+                <div style={{
+                  position: 'absolute',
+                  top: '-20px',
+                  right: '-20px',
+                  width: '60px',
+                  height: '60px',
+                  background: 'linear-gradient(135deg, #FF6B6B, #FF8C42)',
+                  borderRadius: '50%',
+                  opacity: '0.15',
+                  animation: 'pulse 3s ease-in-out infinite'
+                }} />
+                <div style={{
+                  position: 'absolute',
+                  bottom: '-15px',
+                  left: '-15px',
+                  width: '40px',
+                  height: '40px',
+                  background: 'linear-gradient(135deg, #FF8C42, #FFA500)',
+                  borderRadius: '50%',
+                  opacity: '0.1',
+                  animation: 'pulse 3s ease-in-out 1.5s infinite'
+                }} />
+              </div>
+            </div>
+
+            {/* Video Card */}
+            <div style={{
+              borderRadius: '20px',
+              overflow: 'hidden',
+              boxShadow: '0 15px 35px rgba(255,107,107,0.15)',
+              border: '1px solid rgba(255,107,107,0.2)',
+              animation: 'slideInPopup 1s ease-out 0.9s both',
+              transform: 'scale(0)',
+              animationFillMode: 'both',
+              transition: 'all 0.3s ease',
+              position: 'relative'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.transform = 'translateY(-8px) scale(1.02)';
+              e.target.style.boxShadow = '0 25px 50px rgba(255,107,107,0.25)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.transform = 'translateY(0) scale(1)';
+              e.target.style.boxShadow = '0 15px 35px rgba(255,107,107,0.15)';
+            }}>
+              <video
+                autoPlay
+                muted
+                loop
+                playsInline
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  borderRadius: '20px',
+                  display: 'block'
+                }}
+              >
+                <source src="/assets/Team.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+              
+              {/* Video overlay gradient */}
+              <div style={{
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                height: '100px',
+                background: 'linear-gradient(to top, rgba(255,107,107,0.3) 0%, transparent 100%)',
+                borderRadius: '0 0 20px 20px',
+                pointerEvents: 'none'
+              }} />
+            </div>
+          </div>
+          
+          {/* Professional Button */}
+          <div style={{
+            animation: 'fadeInUp 1s ease-out 1.6s both',
+            textAlign: 'center'
+          }}>
+            <button
+              onClick={() => window.location.href = '/about-us'}
+              style={{
+                background: 'linear-gradient(135deg, #FF6B6B 0%, #FF8C42 50%, #FFA500 100%)',
+                border: 'none',
+                color: 'white',
+                padding: '18px 50px',
+                borderRadius: '50px',
+                fontSize: 'clamp(1rem, 2vw, 1.2rem)',
+                fontWeight: '700',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                boxShadow: '0 10px 30px rgba(255,107,107,0.3)',
+                position: 'relative',
+                overflow: 'hidden',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '10px'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.transform = 'translateY(-3px) scale(1.05)';
+                e.target.style.boxShadow = '0 15px 40px rgba(255,107,107,0.4)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.transform = 'translateY(0) scale(1)';
+                e.target.style.boxShadow = '0 10px 30px rgba(255,107,107,0.3)';
+              }}
+            >
+              <span>Learn More About Us</span>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style={{ color: 'white' }}>
+                <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Our Company Services Section */}
+      <section style={{
+        padding: '100px 20px',
+        position: 'relative',
+        zIndex: 1,
+        backgroundColor: isDarkMode ? 'rgba(255,255,255,0.02)' : 'rgba(255,107,107,0.02)'
+      }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: '80px' }}>
+            <h2 style={{
+              fontSize: 'clamp(2.5rem, 5vw, 4rem)',
+              fontWeight: '800',
+              marginBottom: '20px',
+              color: '#FF6B6B',
+              textShadow: '0 4px 20px rgba(255,107,107,0.3)',
+              animation: 'slideInLeft 1.2s ease-out 0.3s both'
+            }}>
+              Our Company Services
+            </h2>
+            <p style={{
+              fontSize: '1.3rem',
+              color: isDarkMode ? '#b0b0b0' : '#666666',
+              maxWidth: '600px',
+              margin: '0 auto',
+              animation: 'fadeInUp 1s ease-out 0.5s both'
+            }}>
+              Strategic lead generation solutions tailored to drive your business growth
+            </p>
+          </div>
+          
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
+            gap: '40px'
+          }}>
+            {/* Content Syndication Leads */}
+            <div style={{
+              padding: '40px',
+              background: 'linear-gradient(135deg, rgba(255,107,107,0.1) 0%, rgba(255,107,107,0.05) 100%)',
+              borderRadius: '24px',
+              border: '2px solid rgba(255,107,107,0.3)',
+              backdropFilter: 'blur(10px)',
+              boxShadow: '0 20px 40px rgba(255,107,107,0.15)',
+              transition: 'all 0.4s ease',
+              cursor: 'pointer',
+              position: 'relative',
+              overflow: 'hidden',
+              animation: 'slideInUp 0.8s ease-out 0.2s both'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.transform = 'translateY(-15px) scale(1.02)';
+              e.target.style.boxShadow = '0 30px 60px rgba(255,107,107,0.25)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.transform = 'translateY(0) scale(1)';
+              e.target.style.boxShadow = '0 20px 40px rgba(255,107,107,0.15)';
+            }}>
+              {/* Service Icon */}
+              <div style={{
+                width: '70px',
+                height: '70px',
+                background: 'linear-gradient(135deg, #FF6B6B, #FF8C42)',
+                borderRadius: '20px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: '25px',
+                boxShadow: '0 10px 25px rgba(255,107,107,0.4)',
+                animation: 'pulse 3s ease-in-out infinite'
+              }}>
+                <svg width="35" height="35" viewBox="0 0 24 24" fill="none" style={{ color: 'white' }}>
+                  <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M2 17L12 22L22 17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M2 12L12 17L22 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              
+              <h3 style={{
+                fontSize: '1.8rem',
+                fontWeight: '700',
+                marginBottom: '20px',
+                color: '#FF6B6B',
+                textShadow: '0 2px 10px rgba(255,107,107,0.3)'
+              }}>
+                Content Syndication Leads
+              </h3>
+              
+              <p style={{
+                fontSize: '1.1rem',
+                lineHeight: '1.7',
+                color: isDarkMode ? '#e0e0e0' : '#333333',
+                marginBottom: '20px'
+              }}>
+                Initial-stage content marketing efforts targeting prospects at the beginning of the sales funnel, generating opt-in leads that have exhibited 100% engagement with the content.
+              </p>
+              
+              {/* Key Features */}
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                marginTop: '25px'
+              }}>
+                <div style={{
+                  width: '12px',
+                  height: '12px',
+                  background: '#FF6B6B',
+                  borderRadius: '50%',
+                  animation: 'pulse 2s ease-in-out infinite'
+                }} />
+                <span style={{
+                  fontSize: '0.95rem',
+                  color: isDarkMode ? '#b0b0b0' : '#666666',
+                  fontWeight: '600'
+                }}>
+                  100% Content Engagement
+                </span>
+              </div>
+            </div>
+
+            {/* Marketing Qualified Leads */}
+            <div style={{
+              padding: '40px',
+              background: 'linear-gradient(135deg, rgba(255,140,66,0.1) 0%, rgba(255,140,66,0.05) 100%)',
+              borderRadius: '24px',
+              border: '2px solid rgba(255,140,66,0.3)',
+              backdropFilter: 'blur(10px)',
+              boxShadow: '0 20px 40px rgba(255,140,66,0.15)',
+              transition: 'all 0.4s ease',
+              cursor: 'pointer',
+              position: 'relative',
+              overflow: 'hidden',
+              animation: 'slideInUp 0.8s ease-out 0.4s both'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.transform = 'translateY(-15px) scale(1.02)';
+              e.target.style.boxShadow = '0 30px 60px rgba(255,140,66,0.25)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.transform = 'translateY(0) scale(1)';
+              e.target.style.boxShadow = '0 20px 40px rgba(255,140,66,0.15)';
+            }}>
+              {/* Service Icon */}
+              <div style={{
+                width: '70px',
+                height: '70px',
+                background: 'linear-gradient(135deg, #FF8C42, #FFA500)',
+                borderRadius: '20px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: '25px',
+                boxShadow: '0 10px 25px rgba(255,140,66,0.4)',
+                animation: 'pulse 3s ease-in-out infinite 0.5s'
+              }}>
+                <svg width="35" height="35" viewBox="0 0 24 24" fill="none" style={{ color: 'white' }}>
+                  <path d="M21 16V8A2 2 0 0 0 19 6H5A2 2 0 0 0 3 8V16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M3 10H21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M12 16V22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M8 22H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <circle cx="9" cy="12" r="1" fill="currentColor"/>
+                  <circle cx="15" cy="12" r="1" fill="currentColor"/>
+                </svg>
+              </div>
+              
+              <h3 style={{
+                fontSize: '1.8rem',
+                fontWeight: '700',
+                marginBottom: '20px',
+                color: '#FF8C42',
+                textShadow: '0 2px 10px rgba(255,140,66,0.3)'
+              }}>
+                Marketing Qualified leads
+              </h3>
+              
+              <p style={{
+                fontSize: '1.1rem',
+                lineHeight: '1.7',
+                color: isDarkMode ? '#e0e0e0' : '#333333',
+                marginBottom: '20px'
+              }}>
+                Mid-funnel prospects that have demonstrated engagement, undergone profiling, and met your pipeline criteria through customized questioning.
+              </p>
+              
+              {/* Key Features */}
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                marginTop: '25px'
+              }}>
+                <div style={{
+                  width: '12px',
+                  height: '12px',
+                  background: '#FF8C42',
+                  borderRadius: '50%',
+                  animation: 'pulse 2s ease-in-out infinite 0.5s'
+                }} />
+                <span style={{
+                  fontSize: '0.95rem',
+                  color: isDarkMode ? '#b0b0b0' : '#666666',
+                  fontWeight: '600'
+                }}>
+                  Pipeline Ready Prospects
+                </span>
+              </div>
+            </div>
+
+            {/* Sales Qualified Leads */}
+            <div style={{
+              padding: '40px',
+              background: 'linear-gradient(135deg, rgba(255,165,0,0.1) 0%, rgba(255,165,0,0.05) 100%)',
+              borderRadius: '24px',
+              border: '2px solid rgba(255,165,0,0.3)',
+              backdropFilter: 'blur(10px)',
+              boxShadow: '0 20px 40px rgba(255,165,0,0.15)',
+              transition: 'all 0.4s ease',
+              cursor: 'pointer',
+              position: 'relative',
+              overflow: 'hidden',
+              animation: 'slideInUp 0.8s ease-out 0.6s both'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.transform = 'translateY(-15px) scale(1.02)';
+              e.target.style.boxShadow = '0 30px 60px rgba(255,165,0,0.25)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.transform = 'translateY(0) scale(1)';
+              e.target.style.boxShadow = '0 20px 40px rgba(255,165,0,0.15)';
+            }}>
+              {/* Service Icon */}
+              <div style={{
+                width: '70px',
+                height: '70px',
+                background: 'linear-gradient(135deg, #FFA500, #FFB347)',
+                borderRadius: '20px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: '25px',
+                boxShadow: '0 10px 25px rgba(255,165,0,0.4)',
+                animation: 'pulse 3s ease-in-out infinite 1s'
+              }}>
+                <svg width="35" height="35" viewBox="0 0 24 24" fill="none" style={{ color: 'white' }}>
+                  <path d="M13 2L3 14H12L11 22L21 10H12L13 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              
+              <h3 style={{
+                fontSize: '1.8rem',
+                fontWeight: '700',
+                marginBottom: '20px',
+                color: '#FFA500',
+                textShadow: '0 2px 10px rgba(255,165,0,0.3)'
+              }}>
+                Sales Qualified Leads
+              </h3>
+              
+              <p style={{
+                fontSize: '1.1rem',
+                lineHeight: '1.7',
+                color: isDarkMode ? '#e0e0e0' : '#333333',
+                marginBottom: '20px'
+              }}>
+                Bottom-of-funnel prospects exhibiting strong purchasing intent, assessed using BANT and I2P strategies to ensure their high qualification status.
+              </p>
+              
+              {/* Key Features */}
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                marginTop: '25px'
+              }}>
+                <div style={{
+                  width: '12px',
+                  height: '12px',
+                  background: '#FFA500',
+                  borderRadius: '50%',
+                  animation: 'pulse 2s ease-in-out infinite 1s'
+                }} />
+                <span style={{
+                  fontSize: '0.95rem',
+                  color: isDarkMode ? '#b0b0b0' : '#666666',
+                  fontWeight: '600'
+                }}>
+                  BANT & I2P Qualified
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section ref={testimonialsRef} style={{
+        padding: '100px 20px',
+        backgroundColor: isDarkMode ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.02)',
+        position: 'relative',
+        zIndex: 1
+      }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: '80px' }}>
+            <h2 style={{
+              fontSize: 'clamp(2rem, 5vw, 3.5rem)',
+              fontWeight: '800',
+              marginBottom: '20px',
+              color: '#FF6B6B'
+            }}>
+              Client Success Stories
+            </h2>
+            <p style={{
+              fontSize: '1.3rem',
+              color: isDarkMode ? '#b0b0b0' : '#666666',
+              maxWidth: '600px',
+              margin: '0 auto'
+            }}>
+              Hear what our clients have to say about working with us
+            </p>
+          </div>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
+            gap: '30px'
+          }}>
+            {testimonials.map((testimonial, index) => (
+              <div
+                key={index}
+                style={{
+                  padding: '40px',
+                  backgroundColor: isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.8)',
+                  borderRadius: '24px',
+                  border: `1px solid ${isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
+                  backdropFilter: 'blur(10px)',
+                  transition: 'all 0.4s ease',
+                  position: 'relative'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = 'translateY(-10px) scale(1.02)';
+                  e.target.style.boxShadow = '0 25px 50px rgba(0,0,0,0.1)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = 'translateY(0) scale(1)';
+                  e.target.style.boxShadow = 'none';
+                }}
+              >
+                {/* Quote Icon */}
+                <div style={{
+                  fontSize: '3rem',
+                  color: '#FF6B6B',
+                  marginBottom: '20px',
+                  opacity: 0.3
+                }}>
+                  "
+                </div>
+                
+                <p style={{
+                  fontSize: '1.1rem',
+                  lineHeight: '1.8',
+                  fontStyle: 'italic',
+                  marginBottom: '30px',
+                  color: isDarkMode ? '#b0b0b0' : '#666666'
+                }}>
+                  {testimonial.content}
+                </p>
+                
+                <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                  <div style={{
+                    width: '50px',
+                    height: '50px',
+                    borderRadius: '50%',
+                    background: 'linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 100%)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'white',
+                    fontWeight: 'bold',
+                    fontSize: '1.2rem'
+                  }}>
+                    {testimonial.avatar}
+                  </div>
+                  <div>
+                    <div style={{ fontWeight: '700', color: isDarkMode ? '#ffffff' : '#1a1a1a' }}>
+                      {testimonial.name}
+                    </div>
+                    <div style={{ fontSize: '0.9rem', color: isDarkMode ? '#888888' : '#666666' }}>
+                      {testimonial.position}, {testimonial.company}
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Rating */}
+                <div style={{ display: 'flex', marginTop: '20px', gap: '5px' }}>
+                  {[...Array(testimonial.rating)].map((_, i) => (
+                    <span key={i} style={{ color: '#FFD700', fontSize: '1.2rem' }}>{"\u2b50"}</span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section ref={contactRef} style={{
+        padding: '100px 20px',
+        position: 'relative',
+        zIndex: 1
+      }}>
+        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: '60px' }}>
+            <h2 style={{
+              fontSize: 'clamp(2rem, 5vw, 3.5rem)',
+              fontWeight: '800',
+              marginBottom: '20px',
+              color: '#FF6B6B'
+            }}>
+              Let's Talk
+            </h2>
+            <p style={{
+              fontSize: '1.3rem',
+              color: isDarkMode ? '#b0b0b0' : '#666666'
+            }}>
+              Ready to transform your B2B demand generation?
+            </p>
+          </div>
+
+          {showSuccess ? (
+            <div style={{
+              padding: '60px',
+              backgroundColor: 'rgba(78,205,196,0.1)',
+              border: '2px solid #4ECDC4',
+              borderRadius: '24px',
+              textAlign: 'center'
+            }}>
+              <div style={{
+                fontSize: '3rem',
+                color: '#4ECDC4',
+                marginBottom: '20px'
+              }}>
+                {"\u2713"}
+              </div>
+              <h3 style={{
+                fontSize: '1.5rem',
+                fontWeight: '700',
+                color: isDarkMode ? '#ffffff' : '#1a1a1a',
+                marginBottom: '10px'
+              }}>
+                Thank You!
+              </h3>
+              <p style={{ color: isDarkMode ? '#b0b0b0' : '#666666' }}>
+                We'll get back to you within 24 hours.
+              </p>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} style={{
+              padding: '60px',
+              backgroundColor: isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.8)',
+              borderRadius: '24px',
+              border: `1px solid ${isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
+              backdropFilter: 'blur(10px)'
+            }}>
+              <div style={{ display: 'grid', gap: '25px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '25px' }}>
+                  <input
+                    type="text"
+                    placeholder="Your Name *"
+                    required
+                    value={formData.name}
+                    onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                    style={{
+                      padding: '18px',
+                      backgroundColor: isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
+                      border: `1px solid ${isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
+                      borderRadius: '12px',
+                      color: isDarkMode ? '#ffffff' : '#1a1a1a',
+                      fontSize: '1rem',
+                      transition: 'all 0.3s ease'
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = '#FF6B6B';
+                      e.target.style.boxShadow = '0 0 0 3px rgba(255,107,107,0.1)';
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
+                      e.target.style.boxShadow = 'none';
+                    }}
+                  />
+                  
+                  <input
+                    type="email"
+                    placeholder="Business Email *"
+                    required
+                    value={formData.email}
+                    onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                    style={{
+                      padding: '18px',
+                      backgroundColor: isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
+                      border: `1px solid ${isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
+                      borderRadius: '12px',
+                      color: isDarkMode ? '#ffffff' : '#1a1a1a',
+                      fontSize: '1rem',
+                      transition: 'all 0.3s ease'
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = '#FF6B6B';
+                      e.target.style.boxShadow = '0 0 0 3px rgba(255,107,107,0.1)';
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
+                      e.target.style.boxShadow = 'none';
+                    }}
+                  />
+                </div>
+                
+                <input
+                  type="text"
+                  placeholder="Company Name"
+                  value={formData.company}
+                  onChange={(e) => setFormData(prev => ({ ...prev, company: e.target.value }))}
+                  style={{
+                    padding: '18px',
+                    backgroundColor: isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
+                    border: `1px solid ${isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
+                    borderRadius: '12px',
+                    color: isDarkMode ? '#ffffff' : '#1a1a1a',
+                    fontSize: '1rem',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = '#FF6B6B';
+                    e.target.style.boxShadow = '0 0 0 3px rgba(255,107,107,0.1)';
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
+                    e.target.style.boxShadow = 'none';
+                  }}
+                />
+                
+                <select
+                  value={formData.budget}
+                  onChange={(e) => setFormData(prev => ({ ...prev, budget: e.target.value }))}
+                  style={{
+                    padding: '18px',
+                    backgroundColor: isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
+                    border: `1px solid ${isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
+                    borderRadius: '12px',
+                    color: isDarkMode ? '#ffffff' : '#1a1a1a',
+                    fontSize: '1rem',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = '#FF6B6B';
+                    e.target.style.boxShadow = '0 0 0 3px rgba(255,107,107,0.1)';
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
+                    e.target.style.boxShadow = 'none';
+                  }}
+                >
+                  <option value="">Select Budget Range</option>
+                  <option value="5k-10k">$5,000 - $10,000</option>
+                  <option value="10k-25k">$10,000 - $25,000</option>
+                  <option value="25k-50k">$25,000 - $50,000</option>
+                  <option value="50k+">$50,000+</option>
+                </select>
+                
+                <textarea
+                  placeholder="Tell us about your goals and requirements..."
+                  value={formData.message}
+                  onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))}
+                  rows={5}
+                  style={{
+                    padding: '18px',
+                    backgroundColor: isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
+                    border: `1px solid ${isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
+                    borderRadius: '12px',
+                    color: isDarkMode ? '#ffffff' : '#1a1a1a',
+                    fontSize: '1rem',
+                    resize: 'vertical',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = '#FF6B6B';
+                    e.target.style.boxShadow = '0 0 0 3px rgba(255,107,107,0.1)';
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
+                    e.target.style.boxShadow = 'none';
+                  }}
+                />
+                
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  style={{
+                    background: '#FF6B6B',
+                    border: 'none',
+                    color: 'white',
+                    padding: '20px',
+                    borderRadius: '12px',
+                    fontSize: '1.1rem',
+                    fontWeight: '600',
+                    cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                    transition: 'all 0.3s ease',
+                    boxShadow: '0 10px 30px rgba(255,107,107,0.3)',
+                    opacity: isSubmitting ? 0.7 : 1
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isSubmitting) {
+                      e.target.style.transform = 'translateY(-3px) scale(1.02)';
+                      e.target.style.boxShadow = '0 15px 40px rgba(255,107,107,0.4)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.transform = 'translateY(0) scale(1)';
+                    e.target.style.boxShadow = '0 10px 30px rgba(255,107,107,0.3)';
+                  }}
+                >
+                  {isSubmitting ? 'Sending...' : 'Send Message'}
+                </button>
+              </div>
+            </form>
+          )}
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer style={{
+        padding: '60px 20px 30px',
+        backgroundColor: isDarkMode ? '#0a0a0a' : '#1a1a1a',
+        color: '#ffffff',
+        position: 'relative',
+        zIndex: 1
+      }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: { xs: '1fr', md: '2fr 1fr 1fr 1fr' },
+            gap: '40px',
+            marginBottom: '40px'
+          }}>
+            <div>
+              <h3 style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '20px' }}>
+                TrueWaveites
+              </h3>
+              <p style={{ lineHeight: '1.6', color: '#b0b0b0', marginBottom: '20px' }}>
+                We slice through the clutter and prioritize what truly counts - Outcomes!
+              </p>
+              <div style={{ display: 'flex', gap: '15px' }}>
+                {['LinkedIn', 'Twitter', 'Facebook'].map((social) => (
+                  <div
+                    key={social}
+                    style={{
+                      width: '40px',
+                      height: '40px',
+                      backgroundColor: 'rgba(255,255,255,0.1)',
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = '#FF6B6B';
+                      e.target.style.transform = 'translateY(-3px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = 'rgba(255,255,255,0.1)';
+                      e.target.style.transform = 'translateY(0)';
+                    }}
+                  >
+                    <span style={{ fontSize: '1.2rem' }}>{social[0]}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            <div>
+              <h4 style={{ fontSize: '1.1rem', fontWeight: '600', marginBottom: '20px' }}>
+                Services
+              </h4>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {services.map((service, index) => (
+                  <a
+                    key={index}
+                    href="#services"
+                    style={{
+                      color: '#b0b0b0',
+                      textDecoration: 'none',
+                      transition: 'color 0.3s ease',
+                      cursor: 'pointer'
+                    }}
+                    onMouseEnter={(e) => e.target.style.color = '#FF6B6B'}
+                    onMouseLeave={(e) => e.target.style.color = '#b0b0b0'}
+                  >
+                    {service.title}
+                  </a>
+                ))}
+              </div>
+            </div>
+            
+            <div>
+              <h4 style={{ fontSize: '1.1rem', fontWeight: '600', marginBottom: '20px' }}>
+                Company
+              </h4>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {['About Us', 'Case Studies', 'Blog', 'Careers'].map((item) => (
+                  <a
+                    key={item}
+                    href="#"
+                    style={{
+                      color: '#b0b0b0',
+                      textDecoration: 'none',
+                      transition: 'color 0.3s ease',
+                      cursor: 'pointer'
+                    }}
+                    onMouseEnter={(e) => e.target.style.color = '#FF6B6B'}
+                    onMouseLeave={(e) => e.target.style.color = '#b0b0b0'}
+                  >
+                    {item}
+                  </a>
+                ))}
+              </div>
+            </div>
+            
+            <div>
+              <h4 style={{ fontSize: '1.1rem', fontWeight: '600', marginBottom: '20px' }}>
+                Contact
+              </h4>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', color: '#b0b0b0' }}>
+                <div>+1-225-347-5362</div>
+                <div>info@truewaveites.com</div>
+                <div>74 E Glenwood Ave, Smyrna, DE 19977</div>
+              </div>
+            </div>
+          </div>
+          
+          <div style={{
+            borderTop: '1px solid rgba(255,255,255,0.1)',
+            paddingTop: '30px',
+            textAlign: 'center',
+            color: '#b0b0b0'
+          }}>
+            <p>&copy; {new Date().getFullYear()} TrueWaveites. All Rights Reserved.</p>
+          </div>
+        </div>
+      </footer>
+
+      {/* Floating Action Button */}
+      <button
+        onClick={() => scrollToSection(contactRef)}
+        style={{
+          position: 'fixed',
+          bottom: '30px',
+          right: '30px',
+          width: '60px',
+          height: '60px',
+          background: '#FF6B6B',
+          border: 'none',
+          borderRadius: '50%',
+          color: 'white',
+          fontSize: '1.5rem',
+          cursor: 'pointer',
+          boxShadow: '0 10px 30px rgba(255,107,107,0.3)',
+          transition: 'all 0.3s ease',
+          zIndex: 999,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}
+        onMouseEnter={(e) => {
+          e.target.style.transform = 'translateY(-5px) scale(1.1)';
+          e.target.style.boxShadow = '0 15px 40px rgba(255,107,107,0.4)';
+        }}
+        onMouseLeave={(e) => {
+          e.target.style.transform = 'translateY(0) scale(1)';
+          e.target.style.boxShadow = '0 10px 30px rgba(255,107,107,0.3)';
+        }}
+      >
+        {"\u2709"}
+      </button>
+    </div>
+  );
+};
+
+export default AppProfessional;

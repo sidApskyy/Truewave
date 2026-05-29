@@ -1,0 +1,22 @@
+.testimonial-spotlight-card .interactive-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: var(--hover-shadow);
+}
+
+.testimonial-spotlight-card .interactive-card:hover .avatar-shine {
+  transform: translateX(100%);
+}
+
+.testimonial-spotlight-card .interactive-card:hover .story-button {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255,107,107,0.5), inset 0 1px 0 rgba(255,255,255,0.4);
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.testimonial-spotlight-card .interactive-card:hover .avatar-shine {
+  animation: shimmer 0.6s ease;
+}
