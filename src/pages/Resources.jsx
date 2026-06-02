@@ -6,6 +6,8 @@ import BlogDetailPage from '../components/BlogDetailPage';
 import Ballpit from '../components/Ballpit';
 
 const Resources = ({ isDarkMode, setIsDarkMode, navigate }) => {
+  const headerRef = useRef(null);
+  const lenisRef = useRef(null);
   const [blogs, setBlogs] = useState([]);
   const [showAdminLogin, setShowAdminLogin] = useState(false);
   const [showUploadForm, setShowUploadForm] = useState(false);
@@ -28,6 +30,44 @@ const Resources = ({ isDarkMode, setIsDarkMode, navigate }) => {
     coverImage: null,
     coverImagePreview: ''
   });
+
+  // Smart Header Scroll - Instant with no animations
+  useEffect(() => {
+    let lastScrollY = window.scrollY;
+    let rafId;
+    
+    const updateHeaderPosition = () => {
+      const header = headerRef.current;
+      if (!header) return;
+      
+      const currentScrollY = window.scrollY;
+      
+      if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        // Scrolling down - instantly hide header
+        header.style.transition = 'none';
+        header.style.transform = 'translateY(-120px)';
+      } else if (currentScrollY < lastScrollY) {
+        // Scrolling up - instantly show header
+        header.style.transition = 'none';
+        header.style.transform = 'translateY(0)';
+      }
+      
+      lastScrollY = currentScrollY;
+      
+      // Continue checking
+      rafId = requestAnimationFrame(updateHeaderPosition);
+    };
+    
+    // Start the RAF loop
+    rafId = requestAnimationFrame(updateHeaderPosition);
+    
+    // Cleanup
+    return () => {
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+      }
+    };
+  }, []);
 
   // Fetch blogs from database
   useEffect(() => {
@@ -336,6 +376,7 @@ const Resources = ({ isDarkMode, setIsDarkMode, navigate }) => {
       `}</style>
       {/* Header Component */}
       <Header 
+        ref={headerRef}
         isDarkMode={isDarkMode} 
         setIsDarkMode={setIsDarkMode} 
         navigate={navigate} 

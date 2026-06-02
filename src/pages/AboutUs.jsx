@@ -198,6 +198,8 @@ const AnimatedTextSection = ({ isDarkMode }) => {
 const AboutUs = ({ isDarkMode, setIsDarkMode, navigate }) => {
   const mainRef = useRef(null);
   const videoRef = useRef(null);
+  const headerRef = useRef(null);
+  const lenisRef = useRef(null);
 
   useLayoutEffect(() => {
     const lenis = new Lenis({
@@ -217,6 +219,9 @@ const AboutUs = ({ isDarkMode, setIsDarkMode, navigate }) => {
       requestAnimationFrame(raf);
     }
     requestAnimationFrame(raf);
+
+    // Store lenis ref for header scroll detection
+    lenisRef.current = lenis;
 
     // GSAP Context for cleanup
     const ctx = gsap.context(() => {
@@ -544,6 +549,44 @@ const AboutUs = ({ isDarkMode, setIsDarkMode, navigate }) => {
     };
   }, []);
 
+  // Smart Header Scroll - Instant with no animations
+  useEffect(() => {
+    let lastScrollY = window.scrollY;
+    let rafId;
+    
+    const updateHeaderPosition = () => {
+      const header = headerRef.current;
+      if (!header) return;
+      
+      const currentScrollY = window.scrollY;
+      
+      if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        // Scrolling down - instantly hide header
+        header.style.transition = 'none';
+        header.style.transform = 'translateY(-120px)';
+      } else if (currentScrollY < lastScrollY) {
+        // Scrolling up - instantly show header
+        header.style.transition = 'none';
+        header.style.transform = 'translateY(0)';
+      }
+      
+      lastScrollY = currentScrollY;
+      
+      // Continue checking
+      rafId = requestAnimationFrame(updateHeaderPosition);
+    };
+    
+    // Start the RAF loop
+    rafId = requestAnimationFrame(updateHeaderPosition);
+    
+    // Cleanup
+    return () => {
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+      }
+    };
+  }, []);
+
   const milestones = [
     {
       year: '2012',
@@ -606,6 +649,7 @@ const AboutUs = ({ isDarkMode, setIsDarkMode, navigate }) => {
     }}>
       {/* Header Component */}
       <Header 
+        ref={headerRef}
         isDarkMode={isDarkMode} 
         setIsDarkMode={setIsDarkMode} 
         navigate={navigate} 
@@ -720,14 +764,13 @@ const AboutUs = ({ isDarkMode, setIsDarkMode, navigate }) => {
           <h1 className="hero-title" style={{
             fontSize: 'clamp(3.5rem, 8vw, 6rem)',
             fontWeight: '900',
-            marginBottom: '32px',
-            background: 'linear-gradient(135deg, #ffffff 0%, #FF8C42 35%, #FF6B6B 65%, #ffffff 100%)',
+            marginBottom: '32px',       
+            background: 'white',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
             letterSpacing: '-0.05em',
             lineHeight: '1.1',
-            textShadow: '0 4px 20px rgba(255,140,66,0.3)',
             position: 'relative'
           }}>
             <TextType 
@@ -808,15 +851,16 @@ const AboutUs = ({ isDarkMode, setIsDarkMode, navigate }) => {
           {/* Section Header */}
           <div style={{ textAlign: 'center', marginBottom: '80px' }}>
             <h2 className="section-title" style={{
-              fontSize: 'clamp(2.5rem, 5vw, 3.5rem)',
+              fontSize: 'clamp(3rem, 7vw, 4rem)',
               fontWeight: '800',
               marginBottom: '24px',
-              background: 'linear-gradient(135deg, #FF8C42 0%, #FF6B6B 50%, #4ECDC4 100%)',
+              background: 'linear-gradient(135deg, #00D4FF  0%, #7B61FF  50%, #FF4ECD  100%)',
+              textShadow: '0 4px 20px #7B61FF',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
               letterSpacing: '-0.03em',
-              lineHeight: '1.2'
+              lineHeight: '1.2',
             }}>
               <TextType 
                 text={["Our Vision & Mission"]}
@@ -907,7 +951,8 @@ const AboutUs = ({ isDarkMode, setIsDarkMode, navigate }) => {
               fontSize: 'clamp(3rem, 6vw, 4rem)',
               fontWeight: '900',
               marginBottom: '32px',
-              background: 'linear-gradient(135deg, #FF8C42 0%, #FF6B6B 50%, #4ECDC4 100%)',
+              background: 'linear-gradient(135deg, #FF383B 0%, #FF8C42 50%, #FF4ECD 100%)',
+              textShadow: '0 4px 20px #FF8C42',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',

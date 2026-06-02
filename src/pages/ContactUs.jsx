@@ -60,6 +60,8 @@ if (styleSheet) {
 const ContactUs = ({ isDarkMode, setIsDarkMode, navigate }) => {
   const mainRef = useRef(null);
   const formRef = useRef(null);
+  const headerRef = useRef(null);
+  const lenisRef = useRef(null);
   
   const [formData, setFormData] = useState({
     name: '',
@@ -91,6 +93,9 @@ const ContactUs = ({ isDarkMode, setIsDarkMode, navigate }) => {
       requestAnimationFrame(raf);
     }
     requestAnimationFrame(raf);
+
+    // Store lenis ref for header scroll detection
+    lenisRef.current = lenis;
 
     // GSAP Context for cleanup
     const ctx = gsap.context(() => {
@@ -174,6 +179,44 @@ const ContactUs = ({ isDarkMode, setIsDarkMode, navigate }) => {
     return () => {
       ctx.revert();
       lenis.destroy();
+    };
+  }, []);
+
+  // Smart Header Scroll - Instant with no animations
+  useEffect(() => {
+    let lastScrollY = window.scrollY;
+    let rafId;
+    
+    const updateHeaderPosition = () => {
+      const header = headerRef.current;
+      if (!header) return;
+      
+      const currentScrollY = window.scrollY;
+      
+      if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        // Scrolling down - instantly hide header
+        header.style.transition = 'none';
+        header.style.transform = 'translateY(-120px)';
+      } else if (currentScrollY < lastScrollY) {
+        // Scrolling up - instantly show header
+        header.style.transition = 'none';
+        header.style.transform = 'translateY(0)';
+      }
+      
+      lastScrollY = currentScrollY;
+      
+      // Continue checking
+      rafId = requestAnimationFrame(updateHeaderPosition);
+    };
+    
+    // Start the RAF loop
+    rafId = requestAnimationFrame(updateHeaderPosition);
+    
+    // Cleanup
+    return () => {
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+      }
     };
   }, []);
 
@@ -266,6 +309,7 @@ const ContactUs = ({ isDarkMode, setIsDarkMode, navigate }) => {
     }}>
       {/* Header Component */}
       <Header 
+        ref={headerRef}
         isDarkMode={isDarkMode} 
         setIsDarkMode={setIsDarkMode} 
         navigate={navigate} 
