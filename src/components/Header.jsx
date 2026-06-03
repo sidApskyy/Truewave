@@ -230,8 +230,8 @@ const Header = forwardRef(
               inset 0 1px 0 rgba(255,255,255,0.9)
             `,
 
-          transition:
-            'all 0.5s cubic-bezier(0.16,1,0.3,1)'
+          // Remove CSS transition to prevent conflicts with GSAP animations
+          willChange: 'transform'
 
         }}
       >

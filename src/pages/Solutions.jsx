@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
+import React, { useEffect, useRef, useLayoutEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from '@studio-freight/lenis';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import TiltedCard from '../components/TiltedCard';
-import SimpleScrollStack, { SimpleScrollStackItem } from '../components/SimpleScrollStack';
 import TextType from '../components/TextType';
 import { useNavigate } from 'react-router-dom';
 
@@ -35,6 +34,7 @@ const Solutions = ({ isDarkMode, setIsDarkMode, navigate }) => {
 
     // RAF loop with proper cleanup
     let rafId;
+
     function raf(time) {
       lenis.raf(time);
       rafId = requestAnimationFrame(raf);
@@ -104,8 +104,118 @@ const Solutions = ({ isDarkMode, setIsDarkMode, navigate }) => {
           trigger: mainRef.current,
           start: 'top bottom',
           end: 'bottom top',
-          scrub: 1
+          scrub: 0.5
         }
+      });
+
+      // Premium Card Entrance Animations
+      gsap.utils.toArray('.solution-card-wrapper').forEach((card, index) => {
+        gsap.fromTo(card,
+          {
+            y: 80,
+            opacity: 0,
+            scale: 0.95,
+            rotationX: 15
+          },
+          {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            rotationX: 0,
+            duration: 1.2,
+            delay: index * 0.15,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: card,
+              start: 'top 85%',
+              end: 'bottom 15%',
+              toggleActions: 'play none none reverse'
+            }
+          }
+        );
+      });
+
+      // Card Image Hover Effects
+      gsap.utils.toArray('.solution-card-image').forEach((image) => {
+        const card = image.closest('.solution-card-wrapper');
+        const cardInner = card.querySelector('div[style*="display: flex"]');
+
+        card.addEventListener('mouseenter', () => {
+          gsap.to(image, {
+            scale: 1.1,
+            rotation: 5,
+            duration: 0.6,
+            ease: 'power2.out'
+          });
+
+          gsap.to(cardInner, {
+            y: -8,
+            boxShadow: isDarkMode
+              ? '0 40px 80px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.15), inset 0 2px 0 rgba(255,255,255,0.2), 0 0 80px rgba(255,140,66,0.25)'
+              : '0 40px 80px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.9), inset 0 2px 0 rgba(255,255,255,0.95), 0 0 80px rgba(78,205,196,0.15)',
+            duration: 0.4,
+            ease: 'power2.out'
+          });
+
+          // Add border glow effect
+          gsap.to(cardInner, {
+            borderColor: isDarkMode ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.15)',
+            duration: 0.4,
+            ease: 'power2.out'
+          });
+        });
+
+        card.addEventListener('mouseleave', () => {
+          gsap.to(image, {
+            scale: 1,
+            rotation: 0,
+            duration: 0.6,
+            ease: 'power2.out'
+          });
+
+          gsap.to(cardInner, {
+            y: 0,
+            boxShadow: isDarkMode
+              ? '0 30px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.1), inset 0 2px 0 rgba(255,255,255,0.15), 0 0 60px rgba(255,140,66,0.15)'
+              : '0 30px 60px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.8), inset 0 2px 0 rgba(255,255,255,0.9), 0 0 60px rgba(78,205,196,0.08)',
+            duration: 0.4,
+            ease: 'power2.out'
+          });
+
+          // Reset border color
+          gsap.to(cardInner, {
+            borderColor: isDarkMode ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.06)',
+            duration: 0.4,
+            ease: 'power2.out'
+          });
+        });
+
+        // Premium mouse parallax effect
+        card.addEventListener('mousemove', (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+          const rotateX = (y - centerY) / 20;
+          const rotateY = (centerX - x) / 20;
+
+          gsap.to(cardInner, {
+            rotateX: rotateX,
+            rotateY: rotateY,
+            duration: 0.3,
+            ease: 'power1.out'
+          });
+        });
+
+        card.addEventListener('mouseleave', () => {
+          gsap.to(cardInner, {
+            rotateX: 0,
+            rotateY: 0,
+            duration: 0.4,
+            ease: 'power2.out'
+          });
+        });
       });
 
     }, mainRef);
@@ -119,41 +229,100 @@ const Solutions = ({ isDarkMode, setIsDarkMode, navigate }) => {
     };
   }, []);
 
-  // Smart Header Scroll - Instant with no animations
+  // Premium Auto-Hide Header - Lenis-based with GSAP animations
   useEffect(() => {
-    let lastScrollY = window.scrollY;
-    let rafId;
-    
-    const updateHeaderPosition = () => {
-      const header = headerRef.current;
-      if (!header) return;
-      
-      const currentScrollY = window.scrollY;
-      
-      if (currentScrollY > lastScrollY && currentScrollY > 100) {
-        // Scrolling down - instantly hide header
-        header.style.transition = 'none';
-        header.style.transform = 'translateY(-120px)';
-      } else if (currentScrollY < lastScrollY) {
-        // Scrolling up - instantly show header
-        header.style.transition = 'none';
-        header.style.transform = 'translateY(0)';
-      }
-      
-      lastScrollY = currentScrollY;
-      
-      // Continue checking
-      rafId = requestAnimationFrame(updateHeaderPosition);
+    const header = headerRef.current;
+    const lenis = lenisRef.current;
+    if (!header || !lenis) return;
+
+    let lastScrollY = 0;
+    let isHeaderVisible = true;
+    let lastHeaderChangeTime = 0;
+    let ticking = false; // Add RAF throttling
+    const HEADER_COOLDOWN = 150; // Minimum ms between header state changes
+    const SCROLL_THRESHOLD = 10; // Minimum pixels to trigger header change
+
+    // Initialize header position - ensure it's visible
+    gsap.set(header, { y: 0, opacity: 1 });
+
+    const handleScroll = ({ scroll, limit, velocity, direction, progress }) => {
+      if (ticking) return; // Throttle with RAF
+
+      ticking = true;
+      requestAnimationFrame(() => {
+        const currentScrollY = scroll;
+        const scrollDelta = Math.abs(currentScrollY - lastScrollY);
+        const now = Date.now();
+
+        // Ignore tiny scroll movements
+        if (scrollDelta < SCROLL_THRESHOLD) {
+          ticking = false;
+          return;
+        }
+
+        // Check cooldown to prevent rapid state changes
+        if (now - lastHeaderChangeTime < HEADER_COOLDOWN) {
+          ticking = false;
+          return;
+        }
+
+        // Always show header when near top (increased threshold)
+        if (currentScrollY < 200) {
+          if (!isHeaderVisible) {
+            gsap.to(header, {
+              y: 0,
+              duration: 0.35,
+              ease: 'power2.out',
+              overwrite: 'auto'
+            });
+            isHeaderVisible = true;
+            lastHeaderChangeTime = now;
+          }
+          lastScrollY = currentScrollY;
+          ticking = false;
+          return;
+        }
+
+        // Use Lenis direction for more reliable detection
+        // direction: 1 = down, -1 = up
+        if (direction === 1 && currentScrollY > 200) {
+          // Scrolling down - hide header
+          if (isHeaderVisible) {
+            gsap.to(header, {
+              y: -120,
+              duration: 0.35,
+              ease: 'power2.out',
+              overwrite: 'auto'
+            });
+            isHeaderVisible = false;
+            lastHeaderChangeTime = now;
+          }
+        } else if (direction === -1) {
+          // Scrolling up - show header
+          if (!isHeaderVisible) {
+            gsap.to(header, {
+              y: 0,
+              duration: 0.35,
+              ease: 'power2.out',
+              overwrite: 'auto'
+            });
+            isHeaderVisible = true;
+            lastHeaderChangeTime = now;
+          }
+        }
+
+        lastScrollY = currentScrollY;
+        ticking = false;
+      });
     };
-    
-    // Start the RAF loop
-    rafId = requestAnimationFrame(updateHeaderPosition);
-    
+
+    // Subscribe to Lenis scroll events
+    lenis.on('scroll', handleScroll);
+
     // Cleanup
     return () => {
-      if (rafId) {
-        cancelAnimationFrame(rafId);
-      }
+      lenis.off('scroll', handleScroll);
+      gsap.killTweensOf(header);
     };
   }, []);
 
@@ -492,13 +661,13 @@ const Solutions = ({ isDarkMode, setIsDarkMode, navigate }) => {
 
       {/* Main Solutions with Enhanced ScrollStack Effect */}
       <section style={{
-        padding: '80px 20px 0px 20px',
+        padding: '80px 20px 100px 20px',
         position: 'relative',
         zIndex: 1,
         background: isDarkMode
           ? 'radial-gradient(ellipse at 20% 30%, rgba(255,140,66,0.15) 0%, transparent 50%), radial-gradient(ellipse at 80% 70%, rgba(78,205,196,0.12) 0%, transparent 50%), linear-gradient(135deg, black 0%, black 50%, black 100%)'
           : 'radial-gradient(ellipse at 20% 30%, rgba(255,140,66,0.08) 0%, transparent 50%), radial-gradient(ellipse at 80% 70%, rgba(78,205,196,0.06) 0%, transparent 50%), linear-gradient(135deg, white 0%, white 50%, white 100%)',
-        overflow: 'hidden'
+        overflow: 'visible'
       }}>
         {/* Animated background elements */}
         <div style={{
@@ -543,7 +712,7 @@ const Solutions = ({ isDarkMode, setIsDarkMode, navigate }) => {
               fontSize: 'clamp(3rem, 5vw, 4.5rem)',
               fontWeight: '900',
               marginBottom: '0',
-              background: 'linear-gradient(135deg, #FF8C42 0%, #FF6B6B 50%, #4ECDC4 100%)',
+              background: 'linear-gradient(135deg, #00D4FF 0%, #7B61FF 50%, #FF4ECD 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
@@ -565,35 +734,47 @@ const Solutions = ({ isDarkMode, setIsDarkMode, navigate }) => {
               color: isDarkMode ? 'white' : 'black',
               maxWidth: '700px',
               margin: '0',
-              fontWeight: '400'
+              fontWeight: '500'
             }}>
               Transform your B2B marketing with our comprehensive suite of data-driven solutions designed to accelerate growth and maximize ROI
             </p>
           </div>
-          
-          <SimpleScrollStack>
+
+          {/* Static Cards - No Animation */}
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '40px',
+            width: '100%',
+            maxWidth: '900px',
+            margin: '0 auto',
+            padding: '20px 0',
+            perspective: '1000px'
+          }}>
             {solutions.map((solution, index) => (
-              <SimpleScrollStackItem key={index} className={`solution-card-${index}`}>
+              <div key={index} className={`solution-card-wrapper solution-card-${index}`} style={{ width: '100%' }}>
                 <div style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '60px',
-                  background: isDarkMode 
+                  gap: '24px',
+                  background: isDarkMode
                     ? 'linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.04) 50%, rgba(255,255,255,0.08) 100%)'
                     : 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.98) 50%, rgba(255,255,255,0.92) 100%)',
-                  borderRadius: '40px',
-                  padding: '80px',
+                  borderRadius: '24px',
+                  padding: '24px',
                   border: `2px solid ${isDarkMode ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.06)'}`,
                   backdropFilter: 'none',
-                  boxShadow: isDarkMode 
-                    ? '0 40px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.1), inset 0 2px 0 rgba(255,255,255,0.15), 0 0 100px rgba(255,140,66,0.1)'
-                    : '0 40px 80px rgba(0,0,0,0.15), 0 0 0 1px rgba(255,255,255,0.8), inset 0 2px 0 rgba(255,255,255,0.9), 0 0 100px rgba(78,205,196,0.05)',
-                  maxWidth: '1200px',
+                  boxShadow: isDarkMode
+                    ? '0 30px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.1), inset 0 2px 0 rgba(255,255,255,0.15), 0 0 60px rgba(255,140,66,0.15)'
+                    : '0 30px 60px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.8), inset 0 2px 0 rgba(255,255,255,0.9), 0 0 60px rgba(78,205,196,0.08)',
                   width: '100%',
                   position: 'relative',
-                  overflow: 'hidden',
-                  transition: 'all 0.4s cubic-bezier(0.23, 1, 0.32, 1)',
-                  transform: 'translateZ(0)'
+                  overflow: 'visible',
+                  transition: 'box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+                  transform: 'translateZ(0)',
+                  transformStyle: 'preserve-3d',
+                  willChange: 'transform, box-shadow, border-color'
                 }}>
                   {/* Enhanced gradient overlay */}
                  <div style={{
@@ -610,57 +791,38 @@ const Solutions = ({ isDarkMode, setIsDarkMode, navigate }) => {
                   {/* Corner accent with glow */}
                   <div style={{
                     position: 'absolute',
-                    top: '30px',
-                    right: '30px',
-                    width: '60px',
-                    height: '60px',
+                    top: '16px',
+                    right: '16px',
+                    width: '40px',
+                    height: '40px',
                     borderRadius: '50%',
                     background: `radial-gradient(circle, ${solution.color}30, transparent)`,
-                    border: `3px solid ${solution.color}60`,
-                    boxShadow: `0 0 20px ${solution.color}40`,
+                    border: `2px solid ${solution.color}60`,
+                    boxShadow: `0 0 15px ${solution.color}40`,
                     animation: 'pulse 2s ease-in-out infinite'
                   }} />
-                  
-                  {/* Number indicator */}
-                  <div style={{
-                    position: 'absolute',
-                    top: '30px',
-                    left: '30px',
-                    width: '50px',
-                    height: '50px',
-                    borderRadius: '15px',
-                    background: `linear-gradient(135deg, ${solution.color}, ${solution.color}80)`,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '1.5rem',
-                    fontWeight: '700',
-                    color: '#ffffff',
-                    boxShadow: `0 8px 16px ${solution.color}40`
-                  }}>
-                    {String(index + 1).padStart(2, '0')}
-                  </div>
+
                   {/* Left Side - Enhanced Text Content */}
-                  <div style={{ flex: 1, position: 'relative', paddingLeft: '20px' }}>
+                  <div style={{ flex: 1, position: 'relative', paddingLeft: '12px' }}>
                     {/* Enhanced background pattern */}
                     <div style={{
                       position: 'absolute',
-                      top: '-30px',
-                      left: '-30px',
-                      width: '150px',
-                      height: '150px',
+                      top: '-20px',
+                      left: '-20px',
+                      width: '100px',
+                      height: '100px',
                       borderRadius: '50%',
                       background: `radial-gradient(circle, ${solution.color}15, transparent)`,
-                      filter: 'blur(25px)',
+                      filter: 'blur(20px)',
                       animation: 'float 4s ease-in-out infinite'
                     }} />
-                    
+
                     {/* Enhanced icon with glow */}
                     <div style={{
-                      fontSize: '6rem',
-                      marginBottom: '35px',
+                      fontSize: '2.5rem',
+                      marginBottom: '12px',
                       color: solution.color,
-                      filter: `drop-shadow(0 6px 20px ${solution.color}40) drop-shadow(0 0 30px ${solution.color}20)`,
+                      filter: `drop-shadow(0 4px 12px ${solution.color}40) drop-shadow(0 0 20px ${solution.color}20)`,
                       transform: 'translateY(0)',
                       transition: 'all 0.4s cubic-bezier(0.23, 1, 0.32, 1)',
                       animation: 'float 3s ease-in-out infinite',
@@ -669,17 +831,17 @@ const Solutions = ({ isDarkMode, setIsDarkMode, navigate }) => {
                     }}>
                       {solution.icon}
                     </div>
-                    
+
                     {/* Enhanced title with theme-optimized colors */}
                     <h3 style={{
-                      fontSize: '3.2rem',
+                      fontSize: '1.6rem',
                       fontWeight: '800',
-                      marginBottom: '28px',
-                      lineHeight: '1.05',
-                      letterSpacing: '-0.025em',
+                      marginBottom: '12px',
+                      lineHeight: '1.1',
+                      letterSpacing: '-0.02em',
                       // Fallback color for browsers that don't support background-clip
                       color: isDarkMode ? solution.color : solution.color,
-                      background: isDarkMode 
+                      background: isDarkMode
                         ? `linear-gradient(135deg, #f8f9fa, ${solution.color}, ${solution.color}CC)`
                         : 'none',
                       WebkitBackgroundClip: isDarkMode ? 'text' : 'initial',
@@ -705,17 +867,17 @@ const Solutions = ({ isDarkMode, setIsDarkMode, navigate }) => {
                     }}>
                       {solution.title}
                     </h3>
-                    
+
                     {/* Enhanced description with theme-optimized colors */}
                     <p style={{
-                      fontSize: '1.4rem',
-                      lineHeight: '1.8',
+                      fontSize: '0.95rem',
+                      lineHeight: '1.4',
                       color: isDarkMode ? '#e2e8f0' : '#4a5568',
                       fontWeight: '400',
-                      maxWidth: '520px',
+                      maxWidth: '300px',
                       position: 'relative',
-                      paddingLeft: '24px',
-                      borderLeft: `4px solid ${solution.color}`,
+                      paddingLeft: '16px',
+                      borderLeft: `3px solid ${solution.color}`,
                       transition: 'all 0.4s cubic-bezier(0.23, 1, 0.32, 1)',
                       textShadow: isDarkMode ? '0 1px 3px rgba(0,0,0,0.3)' : '0 1px 2px rgba(0,0,0,0.1)',
                       zIndex: 2
@@ -726,7 +888,7 @@ const Solutions = ({ isDarkMode, setIsDarkMode, navigate }) => {
                                       </div>
                   
                   {/* Right Side - Enhanced Image */}
-                  <div style={{ 
+                  <div style={{
                     flex: 1,
                     display: 'flex',
                     alignItems: 'center',
@@ -739,46 +901,47 @@ const Solutions = ({ isDarkMode, setIsDarkMode, navigate }) => {
                       top: '50%',
                       left: '50%',
                       transform: 'translate(-50%, -50%)',
-                      width: '400px',
-                      height: '400px',
+                      width: '180px',
+                      height: '180px',
                       borderRadius: '50%',
                       background: `radial-gradient(circle, ${solution.color}10, transparent)`,
-                      filter: 'blur(30px)',
+                      filter: 'blur(25px)',
                       animation: 'pulse 4s ease-in-out infinite',
                       zIndex: 1
                     }} />
-                                      
+
                     {/* Enhanced image container */}
                     <div style={{
                       position: 'relative',
-                      borderRadius: '24px',
+                      borderRadius: '16px',
                       overflow: 'hidden',
                       transform: 'perspective(1200px) rotateY(0deg)',
                       transition: 'all 0.6s cubic-bezier(0.23, 1, 0.32, 1)',
-                      boxShadow: `0 25px 50px ${solution.color}30, 0 0 0 1px ${solution.color}20`,
-                      background: isDarkMode 
+                      boxShadow: `0 15px 30px ${solution.color}30, 0 0 0 1px ${solution.color}20`,
+                      background: isDarkMode
                         ? 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)'
                         : 'linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.95) 100%)',
-                      padding: '4px',
+                      padding: '3px',
                       zIndex: 2
                     }}>
                       <div style={{
-                        borderRadius: '20px',
+                        borderRadius: '14px',
                         overflow: 'hidden',
                         position: 'relative'
                       }}>
-                        <img 
+                        <img
+                          className="solution-card-image"
                           src={solution.image}
                           alt={solution.title}
                           style={{
                             width: '100%',
-                            maxWidth: '450px',
+                            maxWidth: '220px',
                             height: 'auto',
-                            borderRadius: '20px',
+                            borderRadius: '14px',
                             objectFit: 'cover',
                             display: 'block',
-                            filter: isDarkMode 
-                              ? 'contrast(1.3) brightness(1.03) saturate(1.3)' 
+                            filter: isDarkMode
+                              ? 'contrast(1.3) brightness(1.03) saturate(1.3)'
                               : 'contrast(1.3) brightness(1.07) saturate(1.3)',
                             transform: 'translateZ(0) scale(1.02)',
                             backfaceVisibility: 'hidden',
@@ -818,15 +981,15 @@ const Solutions = ({ isDarkMode, setIsDarkMode, navigate }) => {
                     }} />
                   </div>
                 </div>
-              </SimpleScrollStackItem>
+              </div>
             ))}
-          </SimpleScrollStack>
+          </div>
         </div>
       </section>
       
       {/* Enhanced Content Syndication Leads Section */}
       <section id="content-syndication" style={{
-        padding: '40px 20px',
+        padding: '60px 20px',
         position: 'relative',
         zIndex: 1,
         background: isDarkMode

@@ -2240,14 +2240,14 @@ const AnimatedCounter = ({
       }}>
        
 
-        <div style={{ maxWidth: '1400px', margin: '0 auto', position: 'relative', zIndex: 2 }}>
+        <div style={{ maxWidth: '1400px', margin: '25px', position: 'relative', zIndex: 2 }}>
           <div style={{ 
             textAlign: 'center', 
             marginBottom: '60px',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            gap: '32px',
+            gap: '20px',
             position: 'relative',
             zIndex: 10
           }}>
@@ -2261,7 +2261,7 @@ const AnimatedCounter = ({
               textShadow: '0 4px 20px rgba(255,107,107,0.3)'
             }}>
               <GradientText
-                colors={["#FFD700", "#F39C12", "#E74C3C", "#FF8C42", "#FFD700"]}
+                colors={["#00D4FF", "#7B61FF", "#FF4ECD", "#7B61FF", "#FFD700"]}
                 animationSpeed={4}
                 direction="horizontal"
                 pauseOnHover={true}
