@@ -970,7 +970,7 @@ const Solutions = ({ isDarkMode, setIsDarkMode, navigate }) => {
             fontWeight: '800',
             marginBottom: '24px',
             textAlign: 'center',
-            background: 'linear-gradient(135deg, #FF8C42 0%, #FF6B6B 50%, #FF8C42 100%)',
+            background: 'linear-gradient(135deg, #BB5CF6 0%, #4F46E5 50%, #06B6D4 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
@@ -1111,19 +1111,23 @@ const Solutions = ({ isDarkMode, setIsDarkMode, navigate }) => {
             gap: '80px',
             alignItems: 'center'
           }}>
-            <div>
-              <img
-                src="/assets/Marketing Qualified Leads.png"
-                alt="Marketing Qualified Leads"
-                style={{
-                  width: '550px',
-                  height: '450px',
-                  objectFit: 'cover',
-                  borderRadius: '20px',
-                  boxShadow: '0 25px 50px black'
-                }}
-              />
-            </div>
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              style={{
+                width: '100%',
+                height: '450px',
+                objectFit: 'cover',
+                borderRadius: '20px',
+                boxShadow: '0 25px 50px black',
+                backgroundColor: '#000'
+              }}
+            >
+              <source src="/assets/mql.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
             <div style={{ padding: '24px', background: isDarkMode
               ? 'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%)'
               : 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,250,252,0.95) 100%)',
@@ -1340,17 +1344,23 @@ const Solutions = ({ isDarkMode, setIsDarkMode, navigate }) => {
               </div>
             </div>
             <div>
-              <img
-                src="/assets/Sales Qualified Leads.png"
-                alt="Sales Qualified Leads"
+              <video
+                autoPlay
+                loop
+                muted
+                playsInline
                 style={{
                   width: '100%',
                   height: '470px',
                   objectFit: 'cover',
                   borderRadius: '20px',
-                  boxShadow: '0 25px 50px black'
+                  boxShadow: '0 25px 50px black',
+                  backgroundColor: '#000'
                 }}
-              />
+              >
+                <source src="/assets/sales.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
             </div>
           </div>
         </div>
