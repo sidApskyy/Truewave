@@ -4,7 +4,6 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from '@studio-freight/lenis';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import TiltedCard from '../components/TiltedCard';
 import TextType from '../components/TextType';
 import { useNavigate } from 'react-router-dom';
 
@@ -15,6 +14,7 @@ const Solutions = ({ isDarkMode, setIsDarkMode, navigate }) => {
   const mainRef = useRef(null);
   const headerRef = useRef(null);
   const lenisRef = useRef(null);
+  const videoRef = useRef(null);
 
   useLayoutEffect(() => {
     const lenis = new Lenis({
@@ -108,115 +108,6 @@ const Solutions = ({ isDarkMode, setIsDarkMode, navigate }) => {
         }
       });
 
-      // Premium Card Entrance Animations
-      gsap.utils.toArray('.solution-card-wrapper').forEach((card, index) => {
-        gsap.fromTo(card,
-          {
-            y: 80,
-            opacity: 0,
-            scale: 0.95,
-            rotationX: 15
-          },
-          {
-            y: 0,
-            opacity: 1,
-            scale: 1,
-            rotationX: 0,
-            duration: 1.2,
-            delay: index * 0.15,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: card,
-              start: 'top 85%',
-              end: 'bottom 15%',
-              toggleActions: 'play none none reverse'
-            }
-          }
-        );
-      });
-
-      // Card Image Hover Effects
-      gsap.utils.toArray('.solution-card-image').forEach((image) => {
-        const card = image.closest('.solution-card-wrapper');
-        const cardInner = card.querySelector('div[style*="display: flex"]');
-
-        card.addEventListener('mouseenter', () => {
-          gsap.to(image, {
-            scale: 1.1,
-            rotation: 5,
-            duration: 0.6,
-            ease: 'power2.out'
-          });
-
-          gsap.to(cardInner, {
-            y: -8,
-            boxShadow: isDarkMode
-              ? '0 40px 80px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.15), inset 0 2px 0 rgba(255,255,255,0.2), 0 0 80px rgba(255,140,66,0.25)'
-              : '0 40px 80px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.9), inset 0 2px 0 rgba(255,255,255,0.95), 0 0 80px rgba(78,205,196,0.15)',
-            duration: 0.4,
-            ease: 'power2.out'
-          });
-
-          // Add border glow effect
-          gsap.to(cardInner, {
-            borderColor: isDarkMode ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.15)',
-            duration: 0.4,
-            ease: 'power2.out'
-          });
-        });
-
-        card.addEventListener('mouseleave', () => {
-          gsap.to(image, {
-            scale: 1,
-            rotation: 0,
-            duration: 0.6,
-            ease: 'power2.out'
-          });
-
-          gsap.to(cardInner, {
-            y: 0,
-            boxShadow: isDarkMode
-              ? '0 30px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.1), inset 0 2px 0 rgba(255,255,255,0.15), 0 0 60px rgba(255,140,66,0.15)'
-              : '0 30px 60px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.8), inset 0 2px 0 rgba(255,255,255,0.9), 0 0 60px rgba(78,205,196,0.08)',
-            duration: 0.4,
-            ease: 'power2.out'
-          });
-
-          // Reset border color
-          gsap.to(cardInner, {
-            borderColor: isDarkMode ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.06)',
-            duration: 0.4,
-            ease: 'power2.out'
-          });
-        });
-
-        // Premium mouse parallax effect
-        card.addEventListener('mousemove', (e) => {
-          const rect = card.getBoundingClientRect();
-          const x = e.clientX - rect.left;
-          const y = e.clientY - rect.top;
-          const centerX = rect.width / 2;
-          const centerY = rect.height / 2;
-          const rotateX = (y - centerY) / 20;
-          const rotateY = (centerX - x) / 20;
-
-          gsap.to(cardInner, {
-            rotateX: rotateX,
-            rotateY: rotateY,
-            duration: 0.3,
-            ease: 'power1.out'
-          });
-        });
-
-        card.addEventListener('mouseleave', () => {
-          gsap.to(cardInner, {
-            rotateX: 0,
-            rotateY: 0,
-            duration: 0.4,
-            ease: 'power2.out'
-          });
-        });
-      });
 
     }, mainRef);
 
@@ -332,12 +223,12 @@ const Solutions = ({ isDarkMode, setIsDarkMode, navigate }) => {
     if ('scrollRestoration' in history) {
       history.scrollRestoration = 'manual';
     }
-    
+
     // Force scroll to top immediately
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
     window.scrollTo(0, 0);
-    
+
     // Re-enable scroll restoration after a delay
     setTimeout(() => {
       if ('scrollRestoration' in history) {
@@ -345,6 +236,69 @@ const Solutions = ({ isDarkMode, setIsDarkMode, navigate }) => {
       }
     }, 100);
   }, []);
+
+  // Video loading and error handling
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) {
+      console.log('Video ref not found');
+      return;
+    }
+
+    console.log('Video element found, attempting to load');
+
+    const handleLoadStart = () => {
+      console.log('Video load started');
+    };
+
+    const handleCanPlay = () => {
+      console.log('Video can play, attempting auto-play');
+      video.play().then(() => {
+        console.log('Video is now playing');
+      }).catch(err => {
+        console.log('Auto-play failed:', err);
+        console.log('Trying with user interaction hint');
+      });
+    };
+
+    const handleError = (e) => {
+      console.error('Video error:', e);
+      console.error('Video error code:', video.error?.code);
+      console.error('Video error message:', video.error?.message);
+    };
+
+    const handleLoadedMetadata = () => {
+      console.log('Video metadata loaded');
+      console.log('Video duration:', video.duration);
+      console.log('Video dimensions:', video.videoWidth, 'x', video.videoHeight);
+    };
+
+    const handlePlaying = () => {
+      console.log('Video is playing');
+    };
+
+    video.addEventListener('loadstart', handleLoadStart);
+    video.addEventListener('canplay', handleCanPlay);
+    video.addEventListener('error', handleError);
+    video.addEventListener('loadedmetadata', handleLoadedMetadata);
+    video.addEventListener('playing', handlePlaying);
+
+    // Try to play immediately
+    video.play().then(() => {
+      console.log('Video play promise resolved');
+    }).catch(err => {
+      console.log('Initial play attempt failed:', err);
+    });
+
+    return () => {
+      video.removeEventListener('loadstart', handleLoadStart);
+      video.removeEventListener('canplay', handleCanPlay);
+      video.removeEventListener('error', handleError);
+      video.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      video.removeEventListener('playing', handlePlaying);
+    };
+  }, []);
+
 
   const solutions = [
     {
@@ -1022,14 +976,7 @@ const Solutions = ({ isDarkMode, setIsDarkMode, navigate }) => {
             backgroundClip: 'text',
             letterSpacing: '-0.02em'
           }}>
-            <TextType 
-              text={["Content Syndication Leads"]}
-              typingSpeed={75}
-              pauseDuration={2000}
-              showCursor={false}
-              startOnVisible={true}
-              initialDelay={500}
-            />
+            Content Syndication Leads
           </h2>
           
           <div style={{
@@ -1038,7 +985,7 @@ const Solutions = ({ isDarkMode, setIsDarkMode, navigate }) => {
             gap: '60px',
             alignItems: 'center'
           }}>
-            <div style={{ padding: '40px', background: isDarkMode 
+            <div style={{ padding: '24px', background: isDarkMode
               ? 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%)'
               : 'linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(248,250,252,0.95) 100%)',
               borderRadius: '24px',
@@ -1046,9 +993,9 @@ const Solutions = ({ isDarkMode, setIsDarkMode, navigate }) => {
               backdropFilter: 'blur(20px)'
             }}>
               <h3 style={{
-                fontSize: '1.8rem',
+                fontSize: '1.4rem',
                 fontWeight: '700',
-                marginBottom: '24px',
+                marginBottom: '16px',
                 color: isDarkMode ? '#ffffff' : '#000000',
                 background: 'linear-gradient(135deg, #FF8C42, #FF6B6B)',
                 WebkitBackgroundClip: 'text',
@@ -1059,26 +1006,26 @@ const Solutions = ({ isDarkMode, setIsDarkMode, navigate }) => {
                 Looking for OTP-in leads and enthralling hand raisers?
               </h3>
               <p style={{
-                fontSize: '1.2rem',
-                lineHeight: '1.8',
+                fontSize: '1rem',
+                lineHeight: '1.6',
                 color: isDarkMode ? '#d0d0d0' : '#4a5568',
-                marginBottom: '24px',
+                marginBottom: '16px',
                 fontWeight: '400'
               }}>
                 We at Truewave Ites specialize in content syndication leads, helping businesses of all sizes generate targeted leads that convert into paying customers. Our team of experts works with you to understand your business, your target audience, and your goals, developing a custom content syndication strategy that delivers measurable results.
               </p>
               <p style={{
-                fontSize: '1.2rem',
-                lineHeight: '1.8',
+                fontSize: '1rem',
+                lineHeight: '1.6',
                 color: isDarkMode ? '#d0d0d0' : '#4a5568',
-                marginBottom: '24px',
+                marginBottom: '16px',
                 fontWeight: '400'
               }}>
                 We take a data-driven approach to content syndication, leveraging advanced analytics and targeting capabilities to identify the right ideal customer profile (ICP) for your content, enabling us to deliver your content to the right people at the right time through right platform.
               </p>
               <p style={{
-                fontSize: '1.2rem',
-                lineHeight: '1.8',
+                fontSize: '1rem',
+                lineHeight: '1.6',
                 color: isDarkMode ? '#d0d0d0' : '#4a5568',
                 fontWeight: '400'
               }}>
@@ -1086,21 +1033,24 @@ const Solutions = ({ isDarkMode, setIsDarkMode, navigate }) => {
               </p>
             </div>
             <div>
-              <TiltedCard
-                imageSrc="/assets/Content Syndication Leads.jpg"
-                altText="Content Syndication Leads"
-                captionText="Content Syndication Leads"
-                containerHeight="500px"
-                containerWidth="100%"
-                imageHeight="500px"
-                imageWidth="100%"
-                rotateAmplitude={12}
-                scaleOnHover={1.15}
-                showMobileWarning={false}
-                showTooltip={false}
-                displayOverlayContent={false}
-                overlayContent={null}
-              />
+              <video
+                ref={videoRef}
+                autoPlay
+                loop
+                muted
+                playsInline
+                style={{
+                  width: '100%',
+                  height: '500px',
+                  objectFit: 'cover',
+                  borderRadius: '24px',
+                  boxShadow: '0 25px 50px black',
+                  backgroundColor: '#000'
+                }}
+              >
+                <source src="/assets/content.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
             </div>
           </div>
         </div>
@@ -1152,14 +1102,7 @@ const Solutions = ({ isDarkMode, setIsDarkMode, navigate }) => {
             backgroundClip: 'text',
             letterSpacing: '-0.02em'
           }}>
-            <TextType 
-              text={["Marketing Qualified Leads"]}
-              typingSpeed={75}
-              pauseDuration={2000}
-              showCursor={false}
-              startOnVisible={true}
-              initialDelay={500}
-            />
+            Marketing Qualified Leads
           </h2>
           
           <div style={{
@@ -1169,30 +1112,25 @@ const Solutions = ({ isDarkMode, setIsDarkMode, navigate }) => {
             alignItems: 'center'
           }}>
             <div>
-              <TiltedCard
-                imageSrc="/assets/Marketing Qualified Leads.png"
-                altText="Marketing Qualified Leads"
-                captionText="Marketing Qualified Leads"
-                containerHeight="450px"
-                containerWidth="550px"
-                imageHeight="450px"
-                imageWidth="550px"
-                rotateAmplitude={12}
-                scaleOnHover={1.15}
-                showMobileWarning={false}
-                showTooltip={false}
-                displayOverlayContent={false}
-                overlayContent={null}
-                borderRadius="20px"
+              <img
+                src="/assets/Marketing Qualified Leads.png"
+                alt="Marketing Qualified Leads"
+                style={{
+                  width: '550px',
+                  height: '450px',
+                  objectFit: 'cover',
+                  borderRadius: '20px',
+                  boxShadow: '0 25px 50px black'
+                }}
               />
             </div>
-            <div style={{ padding: '40px', background: isDarkMode 
+            <div style={{ padding: '24px', background: isDarkMode
               ? 'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%)'
               : 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,250,252,0.95) 100%)',
               borderRadius: '32px',
               border: `2px solid ${isDarkMode ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.06)'}`,
               backdropFilter: 'none',
-              boxShadow: isDarkMode 
+              boxShadow: isDarkMode
                 ? '0 30px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.05), inset 0 2px 0 rgba(255,255,255,0.1)'
                 : '0 30px 60px rgba(0,0,0,0.15), 0 0 0 1px rgba(255,255,255,0.5), inset 0 2px 0 rgba(255,255,255,0.8)',
               position: 'relative',
@@ -1209,11 +1147,11 @@ const Solutions = ({ isDarkMode, setIsDarkMode, navigate }) => {
                 opacity: 0.8,
                 animation: 'shimmer 3s ease-in-out infinite'
               }} />
-              
+
               <h3 style={{
-                fontSize: '1.8rem',
+                fontSize: '1.4rem',
                 fontWeight: '700',
-                marginBottom: '24px',
+                marginBottom: '16px',
                 color: isDarkMode ? '#ffffff' : '#000000',
                 background: 'linear-gradient(135deg, #FF6B6B, #4ECDC4)',
                 WebkitBackgroundClip: 'text',
@@ -1223,23 +1161,23 @@ const Solutions = ({ isDarkMode, setIsDarkMode, navigate }) => {
               }}>
                 Strategic Lead Generation
               </h3>
-              
+
               <p style={{
-                fontSize: '1.2rem',
-                lineHeight: '1.8',
+                fontSize: '1rem',
+                lineHeight: '1.6',
                 color: isDarkMode ? '#e2e8f0' : '#4a5568',
                 fontWeight: '400',
-                marginBottom: '20px'
+                marginBottom: '16px'
               }}>
                 Maintaining a consistent stream of high-quality Marketing Qualified Leads (MQLs) is crucial for a healthy marketing funnel. We develop customized outreach strategies that align with your unique business objectives.
               </p>
-              
+
               <p style={{
-                fontSize: '1.2rem',
-                lineHeight: '1.8',
+                fontSize: '1rem',
+                lineHeight: '1.6',
                 color: isDarkMode ? '#e2e8f0' : '#4a5568',
                 fontWeight: '400',
-                marginBottom: '24px'
+                marginBottom: '16px'
               }}>
                 Our data-driven approach identifies the most promising prospects and tailors messaging to resonate with their needs and interests. We leverage cutting-edge technologies to optimize campaigns and drive measurable results.
               </p>
@@ -1314,14 +1252,7 @@ const Solutions = ({ isDarkMode, setIsDarkMode, navigate }) => {
             backgroundClip: 'text',
             letterSpacing: '-0.02em'
           }}>
-            <TextType 
-              text={["Sales Qualified Leads"]}
-              typingSpeed={75}
-              pauseDuration={2000}
-              showCursor={false}
-              startOnVisible={true}
-              initialDelay={500}
-            />
+            Sales Qualified Leads
           </h2>
           
           <div style={{
@@ -1330,13 +1261,13 @@ const Solutions = ({ isDarkMode, setIsDarkMode, navigate }) => {
             gap: '80px',
             alignItems: 'center'
           }}>
-            <div style={{ padding: '40px', background: isDarkMode 
+            <div style={{ padding: '24px', background: isDarkMode
               ? 'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%)'
               : 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,250,252,0.95) 100%)',
               borderRadius: '32px',
               border: `2px solid ${isDarkMode ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.06)'}`,
               backdropFilter: 'none',
-              boxShadow: isDarkMode 
+              boxShadow: isDarkMode
                 ? '0 30px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.05), inset 0 2px 0 rgba(255,255,255,0.1)'
                 : '0 30px 60px rgba(0,0,0,0.15), 0 0 0 1px rgba(255,255,255,0.5), inset 0 2px 0 rgba(255,255,255,0.8)',
               position: 'relative',
@@ -1353,11 +1284,11 @@ const Solutions = ({ isDarkMode, setIsDarkMode, navigate }) => {
                 opacity: 0.8,
                 animation: 'shimmer 3s ease-in-out infinite'
               }} />
-              
+
               <h3 style={{
-                fontSize: '1.8rem',
+                fontSize: '1.4rem',
                 fontWeight: '700',
-                marginBottom: '24px',
+                marginBottom: '16px',
                 color: isDarkMode ? '#ffffff' : '#000000',
                 background: 'linear-gradient(135deg, #4ECDC4, #FFA500)',
                 WebkitBackgroundClip: 'text',
@@ -1367,23 +1298,23 @@ const Solutions = ({ isDarkMode, setIsDarkMode, navigate }) => {
               }}>
                 Revenue-Ready Leads
               </h3>
-              
+
               <p style={{
-                fontSize: '1.2rem',
-                lineHeight: '1.8',
+                fontSize: '1rem',
+                lineHeight: '1.6',
                 color: isDarkMode ? '#e2e8f0' : '#4a5568',
                 fontWeight: '400',
-                marginBottom: '20px'
+                marginBottom: '16px'
               }}>
                 Sales Qualified Leads (SQLs) are the lifeblood of successful sales organizations. We specialize in generating high-quality SQLs ready to engage with your sales team and convert into revenue.
               </p>
-              
+
               <p style={{
-                fontSize: '1.2rem',
-                lineHeight: '1.8',
+                fontSize: '1rem',
+                lineHeight: '1.6',
                 color: isDarkMode ? '#e2e8f0' : '#4a5568',
                 fontWeight: '400',
-                marginBottom: '24px'
+                marginBottom: '16px'
               }}>
                 Our detailed qualification process provides deep insights into your target audience's needs, while our targeting approach focuses on prospects most likely to convert, increasing your win rates.
               </p>
@@ -1409,21 +1340,16 @@ const Solutions = ({ isDarkMode, setIsDarkMode, navigate }) => {
               </div>
             </div>
             <div>
-              <TiltedCard
-                imageSrc="/assets/Sales Qualified Leads.png"
-                altText="Sales Qualified Leads"
-                captionText="Sales Qualified Leads"
-                containerHeight="470px"
-                containerWidth="100%"
-                imageHeight="470px"
-                imageWidth="100%"
-                rotateAmplitude={12}
-                scaleOnHover={1.15}
-                showMobileWarning={false}
-                showTooltip={false}
-                displayOverlayContent={false}
-                overlayContent={null}
-                borderRadius="20px"
+              <img
+                src="/assets/Sales Qualified Leads.png"
+                alt="Sales Qualified Leads"
+                style={{
+                  width: '100%',
+                  height: '470px',
+                  objectFit: 'cover',
+                  borderRadius: '20px',
+                  boxShadow: '0 25px 50px black'
+                }}
               />
             </div>
           </div>
@@ -1476,14 +1402,7 @@ const Solutions = ({ isDarkMode, setIsDarkMode, navigate }) => {
             backgroundClip: 'text',
             letterSpacing: '-0.02em'
           }}>
-            <TextType 
-              text={["Personalized Programs"]}
-              typingSpeed={75}
-              pauseDuration={2000}
-              showCursor={false}
-              startOnVisible={true}
-              initialDelay={500}
-            />
+            Personalized Programs
           </h2>
           
           <div style={{
@@ -1492,29 +1411,30 @@ const Solutions = ({ isDarkMode, setIsDarkMode, navigate }) => {
             gap: '80px',
             alignItems: 'center'
           }}>
-            <TiltedCard
-              imageSrc="/assets/Personalized Programs.jpg"
-              altText="Personalized Programs"
-              captionText="Personalized Programs"
-              containerHeight="400px"
-              containerWidth="100%"
-              imageHeight="400px"
-              imageWidth="100%"
-              rotateAmplitude={12}
-              scaleOnHover={1.15}
-              showMobileWarning={false}
-              showTooltip={false}
-              displayOverlayContent={false}
-              overlayContent={null}
-              borderRadius="20px"
-            />
-            <div style={{ padding: '40px', background: isDarkMode 
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              style={{
+                width: '100%',
+                height: '400px',
+                objectFit: 'cover',
+                borderRadius: '20px',
+                boxShadow: '0 25px 50px black',
+                backgroundColor: '#000'
+              }}
+            >
+              <source src="/assets/market.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+            <div style={{ padding: '24px', background: isDarkMode
               ? 'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%)'
               : 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,250,252,0.95) 100%)',
               borderRadius: '32px',
               border: `2px solid ${isDarkMode ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.06)'}`,
               backdropFilter: 'none',
-              boxShadow: isDarkMode 
+              boxShadow: isDarkMode
                 ? '0 30px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.05), inset 0 2px 0 rgba(255,255,255,0.1)'
                 : '0 30px 60px rgba(0,0,0,0.15), 0 0 0 1px rgba(255,255,255,0.5), inset 0 2px 0 rgba(255,255,255,0.8)',
               position: 'relative',
@@ -1531,11 +1451,11 @@ const Solutions = ({ isDarkMode, setIsDarkMode, navigate }) => {
                 opacity: 0.8,
                 animation: 'shimmer 3s ease-in-out infinite'
               }} />
-              
+
               <h3 style={{
-                fontSize: '1.8rem',
+                fontSize: '1.4rem',
                 fontWeight: '700',
-                marginBottom: '24px',
+                marginBottom: '16px',
                 color: isDarkMode ? '#ffffff' : '#000000',
                 background: 'linear-gradient(135deg, #FFA500, #FF8C42)',
                 WebkitBackgroundClip: 'text',
@@ -1545,23 +1465,23 @@ const Solutions = ({ isDarkMode, setIsDarkMode, navigate }) => {
               }}>
                 Custom-Tailored Solutions
               </h3>
-              
+
               <p style={{
-                fontSize: '1.2rem',
-                lineHeight: '1.8',
+                fontSize: '1rem',
+                lineHeight: '1.6',
                 color: isDarkMode ? '#e2e8f0' : '#4a5568',
                 fontWeight: '400',
-                marginBottom: '20px'
+                marginBottom: '16px'
               }}>
                 We offer comprehensive monthly programs with customized qualification initiatives. Our approach combines omnichannel strategies with hybrid channels to deliver consistent lead flow throughout the entire customer journey.
               </p>
-              
+
               <p style={{
-                fontSize: '1.2rem',
-                lineHeight: '1.8',
+                fontSize: '1rem',
+                lineHeight: '1.6',
                 color: isDarkMode ? '#e2e8f0' : '#4a5568',
                 fontWeight: '400',
-                marginBottom: '24px'
+                marginBottom: '16px'
               }}>
                 Programs cover data expansion, cleansing, appends, intent data lists, and technographic targeting with automated nurturing campaigns from awareness to conversion.
               </p>
