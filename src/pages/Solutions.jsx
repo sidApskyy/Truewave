@@ -1516,46 +1516,6 @@ const Solutions = ({ isDarkMode, setIsDarkMode, navigate }) => {
           </div>
         </div>
       </section>
-
-      {/* Enhanced Main Solutions Section */}
-      <section style={{
-        padding: '140px 40px 60px 40px',
-        position: 'relative',
-        zIndex: 1,
-        textAlign: 'center'
-      }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-          <h2 className="section-title" style={{
-            fontSize: '2.5rem',
-            fontWeight: '700',
-            marginBottom: '32px',
-            background: 'linear-gradient(135deg, #FF8C42 0%, #FF6B6B 50%, #4ECDC4 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text'
-          }}>
-            Drive Growth With Innovative B2B Marketing!
-          </h2>
-          <p style={{
-            fontSize: '1.2rem',
-            lineHeight: '1.6',
-            maxWidth: '800px',
-            margin: '0 auto 40px',
-            color: isDarkMode ? '#e0e0e0' : '#333333'
-          }}>
-            Together with our clients, we build differentiated B2B brands with fresh ideas that challenge convention, unexpected design that surprises and delights, and engaging experiences along the customer journey. We combine strong expertise across consulting, media activation and data functions to drive unified customer experiences across strategic audiences and accounts.
-          </p>
-          <p style={{
-            fontSize: '1.1rem',
-            lineHeight: '1.6',
-            maxWidth: '800px',
-            margin: '0 auto',
-            color: isDarkMode ? '#e0e0e0' : '#333333'
-          }}>
-            By coloring outside of the traditional agency lines we break down silos, achieving measurable business success for marketing teams and their brands.
-          </p>
-        </div>
-      </section>
     </div>
       <div style={{
         position: 'relative',
