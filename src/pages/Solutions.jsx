@@ -6,6 +6,8 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import TextType from '../components/TextType';
 import { useNavigate } from 'react-router-dom';
+import ScrollStack, { ScrollStackItem } from '../components/ScrollStack';
+import '../components/animations.css';
 
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
@@ -300,40 +302,6 @@ const Solutions = ({ isDarkMode, setIsDarkMode, navigate }) => {
   }, []);
 
 
-  const solutions = [
-    {
-      id: 'intent-marketing',
-      title: 'Intent Marketing',
-      description: 'Attract potential customers by targeting the intent topics relevant to your business',
-      icon: '🎯',
-      color: '#FF8C42',
-      image: '/assets/solution_intent_marketing-removebg-preview.png'
-    },
-    {
-      id: 'account-based-marketing',
-      title: 'Account Based Marketing (ABM)',
-      description: 'Obtain leads from your designated target companies',
-      icon: '🏢',
-      color: '#FF6B6B',
-      image: '/assets/solution_account_based_marketing-removebg-preview.png'
-    },
-    {
-      id: 'install-base-marketing',
-      title: 'Install Base Marketing',
-      description: 'Gather leads by utilizing technographic data for precise audience segmentation',
-      icon: '💻',
-      color: '#4ECDC4',
-      image: '/assets/solution installed based marketing.jpg'
-    },
-    {
-      id: 'demographic-firmographic',
-      title: 'Demographic & Firmographic',
-      description: 'Acquire leads by employing filters based on targeted buyer personas',
-      icon: '👥',
-      color: '#FFA500',
-      image: '/assets/solution_demographic-removebg-preview.png'
-    }
-  ];
 
   const contentSyndicationFeatures = [
     'OTP-in leads and enthralling hand raisers',
@@ -694,251 +662,280 @@ const Solutions = ({ isDarkMode, setIsDarkMode, navigate }) => {
             </p>
           </div>
 
-          {/* Static Cards - No Animation */}
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '40px',
-            width: '100%',
-            maxWidth: '900px',
-            margin: '0 auto',
-            padding: '20px 0',
-            perspective: '1000px'
-          }}>
-            {solutions.map((solution, index) => (
-              <div key={index} className={`solution-card-wrapper solution-card-${index}`} style={{ width: '100%' }}>
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '24px',
-                  background: isDarkMode
-                    ? 'linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.04) 50%, rgba(255,255,255,0.08) 100%)'
-                    : 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.98) 50%, rgba(255,255,255,0.92) 100%)',
-                  borderRadius: '24px',
-                  padding: '24px',
-                  border: `2px solid ${isDarkMode ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.06)'}`,
-                  backdropFilter: 'none',
-                  boxShadow: isDarkMode
-                    ? '0 30px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.1), inset 0 2px 0 rgba(255,255,255,0.15), 0 0 60px rgba(255,140,66,0.15)'
-                    : '0 30px 60px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.8), inset 0 2px 0 rgba(255,255,255,0.9), 0 0 60px rgba(78,205,196,0.08)',
-                  width: '100%',
-                  position: 'relative',
-                  overflow: 'visible',
-                  transition: 'box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-                  transform: 'translateZ(0)',
-                  transformStyle: 'preserve-3d',
-                  willChange: 'transform, box-shadow, border-color'
-                }}>
-                  {/* Enhanced gradient overlay */}
-                 <div style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    height: '4px',
-                    background: `linear-gradient(90deg, ${solution.color}00, ${solution.color}66, ${solution.color}00)`,
-                    opacity: 0.8,
-                    animation: 'shimmer 3s ease-in-out infinite'
-                  }} />
-                  
-                  {/* Corner accent with glow */}
-                  <div style={{
-                    position: 'absolute',
-                    top: '16px',
-                    right: '16px',
-                    width: '40px',
-                    height: '40px',
-                    borderRadius: '50%',
-                    background: `radial-gradient(circle, ${solution.color}30, transparent)`,
-                    border: `2px solid ${solution.color}60`,
-                    boxShadow: `0 0 15px ${solution.color}40`,
-                    animation: 'pulse 2s ease-in-out infinite'
-                  }} />
+         <ScrollStack
+                  stickyOffset={10}
+                  scaleStep={0.015}
+                  opacityStep={0.03}
+                  blurStep={0.25}
+                  className={isDarkMode ? 'dark' : ''}
+                >
 
-                  {/* Left Side - Enhanced Text Content */}
-                  <div style={{ flex: 1, position: 'relative', paddingLeft: '12px' }}>
-                    {/* Enhanced background pattern */}
-                    <div style={{
-                      position: 'absolute',
-                      top: '-20px',
-                      left: '-20px',
-                      width: '100px',
-                      height: '100px',
-                      borderRadius: '50%',
-                      background: `radial-gradient(circle, ${solution.color}15, transparent)`,
-                      filter: 'blur(20px)',
-                      animation: 'float 4s ease-in-out infinite'
-                    }} />
+                  {/* Card 1 */}
 
-                    {/* Enhanced icon with glow */}
-                    <div style={{
-                      fontSize: '2.5rem',
-                      marginBottom: '12px',
-                      color: solution.color,
-                      filter: `drop-shadow(0 4px 12px ${solution.color}40) drop-shadow(0 0 20px ${solution.color}20)`,
-                      transform: 'translateY(0)',
-                      transition: 'all 0.4s cubic-bezier(0.23, 1, 0.32, 1)',
-                      animation: 'float 3s ease-in-out infinite',
-                      position: 'relative',
-                      zIndex: 2
-                    }}>
-                      {solution.icon}
-                    </div>
+                 <ScrollStackItem>
+                    <div className="feature-card">
 
-                    {/* Enhanced title with theme-optimized colors */}
-                    <h3 style={{
-                      fontSize: '1.6rem',
-                      fontWeight: '800',
-                      marginBottom: '12px',
-                      lineHeight: '1.1',
-                      letterSpacing: '-0.02em',
-                      // Fallback color for browsers that don't support background-clip
-                      color: isDarkMode ? solution.color : solution.color,
-                      background: isDarkMode
-                        ? `linear-gradient(135deg, #f8f9fa, ${solution.color}, ${solution.color}CC)`
-                        : 'none',
-                      WebkitBackgroundClip: isDarkMode ? 'text' : 'initial',
-                      WebkitTextFillColor: isDarkMode ? 'transparent' : 'initial',
-                      backgroundClip: isDarkMode ? 'text' : 'initial',
-                      // Remove conflicting shadows in light theme
-                      textShadow: isDarkMode ? '0 2px 8px rgba(0,0,0,0.4)' : 'none',
-                      filter: isDarkMode ? 'drop-shadow(0 0 2px rgba(255,255,255,0.3))' : 'none',
-                      transition: 'all 0.4s cubic-bezier(0.23, 1, 0.32, 1)',
-                      position: 'relative',
-                      zIndex: 2,
-                      // Fix for Safari and WebKit browsers
-                      WebkitTextStroke: '0.5px transparent',
-                      // Ensure smooth rendering
-                      transform: 'translateZ(0)',
-                      backfaceVisibility: 'hidden',
-                      // Optimize for different browsers
-                      willChange: 'transform',
-                      // Prevent subpixel rendering issues
-                      fontSmooth: 'always',
-                      WebkitFontSmoothing: 'antialiased',
-                      MozOsxFontSmoothing: 'grayscale'
-                    }}>
-                      {solution.title}
-                    </h3>
+                      {/* Left Content */}
+                      <div className="feature-content">
 
-                    {/* Enhanced description with theme-optimized colors */}
-                    <p style={{
-                      fontSize: '0.95rem',
-                      lineHeight: '1.4',
-                      color: isDarkMode ? '#e2e8f0' : '#4a5568',
-                      fontWeight: '400',
-                      maxWidth: '300px',
-                      position: 'relative',
-                      paddingLeft: '16px',
-                      borderLeft: `3px solid ${solution.color}`,
-                      transition: 'all 0.4s cubic-bezier(0.23, 1, 0.32, 1)',
-                      textShadow: isDarkMode ? '0 1px 3px rgba(0,0,0,0.3)' : '0 1px 2px rgba(0,0,0,0.1)',
-                      zIndex: 2
-                    }}>
-                      {solution.description}
-                    </p>
-                    
-                                      </div>
-                  
-                  {/* Right Side - Enhanced Image */}
-                  <div style={{
-                    flex: 1,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    position: 'relative'
-                  }}>
-                    {/* Decorative background circle */}
-                    <div style={{
-                      position: 'absolute',
-                      top: '50%',
-                      left: '50%',
-                      transform: 'translate(-50%, -50%)',
-                      width: '180px',
-                      height: '180px',
-                      borderRadius: '50%',
-                      background: `radial-gradient(circle, ${solution.color}10, transparent)`,
-                      filter: 'blur(25px)',
-                      animation: 'pulse 4s ease-in-out infinite',
-                      zIndex: 1
-                    }} />
+                        <span className="feature-badge">
+                          Intent Data
+                        </span>
 
-                    {/* Enhanced image container */}
-                    <div style={{
-                      position: 'relative',
-                      borderRadius: '16px',
-                      overflow: 'hidden',
-                      transform: 'perspective(1200px) rotateY(0deg)',
-                      transition: 'all 0.6s cubic-bezier(0.23, 1, 0.32, 1)',
-                      boxShadow: `0 15px 30px ${solution.color}30, 0 0 0 1px ${solution.color}20`,
-                      background: isDarkMode
-                        ? 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)'
-                        : 'linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.95) 100%)',
-                      padding: '3px',
-                      zIndex: 2
-                    }}>
-                      <div style={{
-                        borderRadius: '14px',
-                        overflow: 'hidden',
-                        position: 'relative'
-                      }}>
-                        <img
-                          className="solution-card-image"
-                          src={solution.image}
-                          alt={solution.title}
+                        <h2
                           style={{
-                            width: '100%',
-                            maxWidth: '220px',
-                            height: 'auto',
-                            borderRadius: '14px',
-                            objectFit: 'cover',
-                            display: 'block',
-                            filter: isDarkMode
-                              ? 'contrast(1.3) brightness(1.03) saturate(1.3)'
-                              : 'contrast(1.3) brightness(1.07) saturate(1.3)',
-                            transform: 'translateZ(0) scale(1.02)',
-                            backfaceVisibility: 'hidden',
-                            imageRendering: 'auto',
-                            WebkitFontSmoothing: 'antialiased',
-                            MozOsxFontSmoothing: 'grayscale',
-                            willChange: 'transform',
-                            transition: 'all 0.6s cubic-bezier(0.23, 1, 0.32, 1)'
+                            background:
+                              'linear-gradient(135deg,#FF8C42 0%,#FF6B6B 100%)',
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent'
                           }}
-                        />
-                       
+                          className="feature-title"
+                        >
+                          Intent Marketing
+                        </h2>
+
+                        <p
+                          className="feature-description"
+                          style={{
+                            color: isDarkMode ? '#CBD5E1' : '#64748B'
+                          }}
+                        >
+                          Identify companies actively researching products
+                          and services similar to yours and engage them at
+                          the perfect buying moment.
+                        </p>
+
+                        <div className="feature-list">
+                          <div className="feature-list-item">
+                            ✓ Real-time buying signals
+                          </div>
+
+                          <div className="feature-list-item">
+                            ✓ High-converting prospects
+                          </div>
+
+                          <div className="feature-list-item">
+                            ✓ Intent score tracking
+                          </div>
+                        </div>
+
+                        <button className="premium-btn">
+                          Explore Intent Data →
+                        </button>
+
                       </div>
+
+                      {/* Right Image */}
+                      <div className="feature-image">
+                        <img
+                          src="/assets/intent.png"
+                          alt="Intent Marketing"
+                        />
+                      </div>
+
                     </div>
-                    
-                    {/* Floating elements */}
-                    <div style={{
-                      position: 'absolute',
-                      top: '20%',
-                      right: '10%',
-                      width: '30px',
-                      height: '30px',
-                      borderRadius: '50%',
-                      background: `radial-gradient(circle, ${solution.color}60, ${solution.color}20)`,
-                      animation: 'float 5s ease-in-out infinite',
-                      zIndex: 1
-                    }} />
-                    <div style={{
-                      position: 'absolute',
-                      bottom: '5%',
-                      left: '15%',
-                      width: '20px',
-                      height: '20px',
-                      borderRadius: '50%',
-                      background: `radial-gradient(circle, ${solution.color}40, transparent)`,
-                      animation: 'float 4s ease-in-out infinite reverse',
-                      zIndex: 1
-                    }} />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+                  </ScrollStackItem>
+
+                  {/* Card 2 */}
+
+                  <ScrollStackItem>
+                    <div className="feature-card">
+
+                      {/* Left Content */}
+                      <div className="feature-content">
+
+                        <span className="feature-badge">
+                          Target Accounts
+                        </span>
+
+                        <h2
+                          style={{
+                            background:
+                              'linear-gradient(135deg,#FF6B6B 0%,#4ECDC4 100%)',
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent'
+                          }}
+                          className="feature-title"
+                        >
+                          Account Based Marketing
+                        </h2>
+
+                        <p
+                          className="feature-description"
+                          style={{
+                            color: isDarkMode ? '#CBD5E1' : '#64748B'
+                          }}
+                        >
+                          Focus your sales and marketing efforts on
+                          high-value companies that match your ideal
+                          customer profile.
+                        </p>
+
+                        <div className="feature-list">
+                          <div className="feature-list-item">
+                            ✓ Named account targeting
+                          </div>
+
+                          <div className="feature-list-item">
+                            ✓ Personalized outreach
+                          </div>
+
+                          <div className="feature-list-item">
+                            ✓ Enterprise lead generation
+                          </div>
+                        </div>
+
+                        <button className="premium-btn">
+                          Discover ABM →
+                        </button>
+
+                      </div>
+
+                      {/* Right Image */}
+                      <div className="feature-image">
+                        <img
+                          src="/assets/Marketing Qualified Leads.png"
+                          alt="Account Based Marketing"
+                        />
+                      </div>
+
+                    </div>
+                  </ScrollStackItem>
+
+                  {/* Card 3 */}
+
+                  <ScrollStackItem>
+                    <div className="feature-card">
+
+                      {/* Left Content */}
+                      <div className="feature-content">
+
+                        <span className="feature-badge">
+                          Technographics
+                        </span>
+
+                        <h2
+                          style={{
+                            background:
+                              'linear-gradient(135deg,#4ECDC4 0%,#FFA500 100%)',
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent'
+                          }}
+                          className="feature-title"
+                        >
+                          Install Base Marketing
+                        </h2>
+
+                        <p
+                          className="feature-description"
+                          style={{
+                            color: isDarkMode ? '#CBD5E1' : '#64748B'
+                          }}
+                        >
+                          Target prospects based on the technologies
+                          already installed in their organization and
+                          uncover replacement opportunities.
+                        </p>
+
+                        <div className="feature-list">
+                          <div className="feature-list-item">
+                            ✓ Tech stack detection
+                          </div>
+
+                          <div className="feature-list-item">
+                            ✓ Competitor replacement campaigns
+                          </div>
+
+                          <div className="feature-list-item">
+                            ✓ Precise segmentation
+                          </div>
+                        </div>
+
+                        <button className="premium-btn">
+                          Explore Technographics →
+                        </button>
+
+                      </div>
+
+                      {/* Right Image */}
+                      <div className="feature-image">
+                        <img
+                          src="/assets/install.png"
+                          alt="Install Base Marketing"
+                        />
+                      </div>
+
+                    </div>
+                  </ScrollStackItem>
+
+                  {/* Card 4 */}
+
+                  <ScrollStackItem>
+                    <div className="feature-card">
+
+                      {/* Left Content */}
+                      <div className="feature-content">
+
+                        <span className="feature-badge">
+                          Buyer Personas
+                        </span>
+
+                        <h2
+                          style={{
+                            background:
+                              'linear-gradient(135deg,#FFA500 0%,#FF8C42 100%)',
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent'
+                          }}
+                          className="feature-title"
+                        >
+                          Demographic & Firmographic
+                        </h2>
+
+                        <p
+                          className="feature-description"
+                          style={{
+                            color: isDarkMode ? '#CBD5E1' : '#64748B'
+                          }}
+                        >
+                          Build highly targeted audiences using company,
+                          industry, revenue, employee count, location,
+                          and job-title data.
+                        </p>
+
+                        <div className="feature-list">
+                          <div className="feature-list-item">
+                            ✓ ICP targeting
+                          </div>
+
+                          <div className="feature-list-item">
+                            ✓ Advanced segmentation
+                          </div>
+
+                          <div className="feature-list-item">
+                            ✓ Better lead quality
+                          </div>
+                        </div>
+
+                        <button className="premium-btn">
+                          Find Your Audience →
+                        </button>
+
+                      </div>
+
+                      {/* Right Image */}
+                      <div className="feature-image">
+                        <img
+                          src="/assets/demographic.png"
+                          alt="Demographic & Firmographic"
+                        />
+                      </div>
+
+                    </div>
+                  </ScrollStackItem>
+
+                </ScrollStack>
+         </div>
       </section>
       
       {/* Enhanced Content Syndication Leads Section */}

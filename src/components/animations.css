@@ -1,0 +1,190 @@
+/* ==========================================
+   PREMIUM ANIMATIONS
+========================================== */
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(5deg);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow:
+      0 40px 80px rgba(0,0,0,0.15),
+      0 20px 40px rgba(0,0,0,0.08),
+      0 0 0 1px rgba(255,255,255,0.7),
+      inset 0 1px 0 rgba(255,255,255,0.9),
+      0 0 60px rgba(255,140,66,0.1);
+  }
+  50% {
+    box-shadow:
+      0 50px 100px rgba(0,0,0,0.18),
+      0 30px 60px rgba(0,0,0,0.10),
+      0 0 0 1px rgba(255,255,255,0.8),
+      inset 0 1px 0 rgba(255,255,255,1),
+      0 0 80px rgba(255,140,66,0.15);
+  }
+}
+
+/* Animated background for cards */
+.scroll-stack-card {
+  animation: glow 4s ease-in-out infinite alternate;
+}
+
+/* Dark mode glow animation */
+.scroll-stack-container.dark .scroll-stack-card {
+  animation: glowDark 4s ease-in-out infinite alternate;
+}
+
+@keyframes glowDark {
+  0%, 100% {
+    box-shadow:
+      0 40px 80px rgba(0,0,0,0.45),
+      0 20px 40px rgba(0,0,0,0.25),
+      0 0 0 1px rgba(255,255,255,0.05),
+      inset 0 1px 0 rgba(255,255,255,0.12),
+      0 0 60px rgba(78,205,196,0.15);
+  }
+  50% {
+    box-shadow:
+      0 50px 100px rgba(0,0,0,0.55),
+      0 30px 60px rgba(0,0,0,0.35),
+      0 0 0 1px rgba(255,255,255,0.08),
+      inset 0 1px 0 rgba(255,255,255,0.18),
+      0 0 80px rgba(78,205,196,0.25);
+  }
+}
+
+/* Subtle gradient animation for card backgrounds */
+.scroll-stack-card {
+  background-size: 300% 300%;
+  animation: gradientShift 10s ease-in-out infinite alternate;
+}
+
+/* Feature badge pulse animation */
+.feature-badge {
+  animation: pulse 2.5s ease-in-out infinite;
+}
+
+/* Feature image hover effect */
+.feature-image img {
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), filter 0.5s ease;
+}
+
+.feature-image img:hover {
+  transform: translateY(-12px) scale(1.05);
+  filter: brightness(1.15) contrast(1.05);
+}
+
+/* Feature title subtle animation */
+.feature-title {
+  animation: titleFloat 6s ease-in-out infinite;
+}
+
+@keyframes titleFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+/* Feature list item stagger animation */
+.feature-list-item {
+  animation: slideIn 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+.feature-list-item:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.feature-list-item:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.feature-list-item:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Premium button hover effect */
+.premium-btn {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.premium-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,0.3),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.premium-btn:hover::before {
+  left: 100%;
+}
+
+.premium-btn:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow:
+    0 20px 40px rgba(255,140,66,0.4),
+    0 10px 20px rgba(255,107,107,0.3);
+}
