@@ -2240,7 +2240,7 @@ const AnimatedCounter = ({
       }}>
        
 
-        <div style={{ maxWidth: '1400px', margin: '25px', position: 'relative', zIndex: 2 }}>
+        <div style={{ maxWidth: '1400px', margin: '25px auto', position: 'relative', zIndex: 2 }}>
           <div style={{ 
             textAlign: 'center', 
             marginBottom: '60px',
@@ -2288,7 +2288,7 @@ const AnimatedCounter = ({
             position: 'relative',
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-            gap: '4px',
+            gap: '2px',
             maxWidth: '1000px',
             margin: '0 auto',
             perspective: '1000px',
