@@ -2819,7 +2819,7 @@ const AnimatedCounter = ({
               <div style={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(3, 1fr)',
-                gap: '50px',
+                gap: '24px',
                 width: '100%',
                 maxWidth: '900px'
               }}>
@@ -2880,12 +2880,12 @@ const AnimatedCounter = ({
                     onMouseEnter={(e) => {
                       const card = e.currentTarget;
                       gsap.to(card, {
-                        y: -16,
-                        scale: 1.08,
-                        rotationY: 8,
-                        rotationX: -8,
-                        boxShadow: `0 30px 60px ${isDarkMode ? 'rgba(99,102,241,0.3)' : 'rgba(99,102,241,0.2)'}`,
-                        duration: 0.6,
+                        y: -10,
+                        scale: 1.04,
+                        rotationY: 5,
+                        rotationX: -5,
+                        boxShadow: `0 25px 60px ${isDarkMode ? 'rgba(139,92,246,0.4)' : 'rgba(139,92,246,0.3)'}`,
+                        duration: 0.5,
                         ease: 'power3.out'
                       });
                       
@@ -2893,10 +2893,10 @@ const AnimatedCounter = ({
                       const icon = card.querySelector('.card-icon');
                       if (icon) {
                         gsap.to(icon, {
-                          scale: 1.4,
-                          rotation: 360,
-                          y: -8,
-                          duration: 0.6,
+                          scale: 1.2,
+                          rotation: 180,
+                          y: -4,
+                          duration: 0.5,
                           ease: 'elastic.out(1, 0.5)'
                         });
                       }
@@ -2905,10 +2905,10 @@ const AnimatedCounter = ({
                       const stats = card.querySelector('.card-stats');
                       if (stats) {
                         gsap.to(stats, {
-                          scale: 1.15,
-                          background: isDarkMode ? 'rgba(99,102,241,0.4)' : 'rgba(99,102,241,0.25)',
-                          boxShadow: `0 8px 25px ${isDarkMode ? 'rgba(99,102,241,0.4)' : 'rgba(99,102,241,0.3)'}`,
-                          duration: 0.4,
+                          scale: 1.1,
+                          background: isDarkMode ? 'rgba(139,92,246,0.4)' : 'rgba(139,92,246,0.25)',
+                          boxShadow: `0 8px 25px ${isDarkMode ? 'rgba(139,92,246,0.4)' : 'rgba(139,92,246,0.3)'}`,
+                          duration: 0.35,
                           ease: 'power3.out'
                         });
                       }
@@ -2917,9 +2917,9 @@ const AnimatedCounter = ({
                       const bgPattern = card.querySelector('.bg-pattern');
                       if (bgPattern) {
                         gsap.to(bgPattern, {
-                          opacity: 0.8,
-                          scale: 1.4,
-                          duration: 0.6,
+                          opacity: 0.6,
+                          scale: 1.2,
+                          duration: 0.5,
                           ease: 'power3.out'
                         });
                       }
@@ -2928,9 +2928,9 @@ const AnimatedCounter = ({
                       const accent = card.querySelector('.accent-bar');
                       if (accent) {
                         gsap.to(accent, {
-                          height: '100%',
-                          opacity: 0.9,
-                          duration: 0.5,
+                          height: '4px',
+                          opacity: 1,
+                          duration: 0.4,
                           ease: 'power3.inOut'
                         });
                       }
@@ -2964,8 +2964,8 @@ const AnimatedCounter = ({
                       if (stats) {
                         gsap.to(stats, {
                           scale: 1,
-                          background: isDarkMode ? 'rgba(99,102,241,0.15)' : 'rgba(99,102,241,0.1)',
-                          boxShadow: isDarkMode ? '0 4px 15px rgba(99,102,241,0.2)' : '0 4px 15px rgba(99,102,241,0.15)',
+                          background: isDarkMode ? 'rgba(139,92,246,0.25)' : 'rgba(139,92,246,0.12)',
+                          boxShadow: isDarkMode ? '0 6px 20px rgba(139,92,246,0.3)' : '0 6px 20px rgba(139,92,246,0.2)',
                           duration: 0.4,
                           ease: 'power3.out'
                         });
@@ -2988,27 +2988,27 @@ const AnimatedCounter = ({
                         gsap.to(accent, {
                           height: '3px',
                           opacity: 1,
-                          duration: 0.5,
+                          duration: 0.4,
                           ease: 'power3.inOut'
                         });
                       }
                     }}
                     style={{
-                      background: isDarkMode 
-                        ? 'linear-gradient(145deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 50%, rgba(255,255,255,0.06) 100%)'
-                        : 'linear-gradient(145deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.99) 50%, rgba(255,255,255,0.98) 100%)',
-                      backdropFilter: 'blur(24px)',
-                      padding: '36px 28px',
-                      borderRadius: '28px',
-                      border: `1.5px solid ${isDarkMode ? 'rgba(99,102,241,0.15)' : 'rgba(99,102,241,0.08)'}`,
+                      background: isDarkMode
+                        ? 'linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.04) 50%, rgba(255,255,255,0.1) 100%)'
+                        : 'linear-gradient(145deg, rgba(255,255,255,1) 0%, rgba(248,250,252,1) 50%, rgba(255,255,255,1) 100%)',
+                      backdropFilter: 'blur(20px)',
+                      padding: '20px 20px',
+                      borderRadius: '24px',
+                      border: `1.5px solid ${isDarkMode ? 'rgba(139,92,246,0.25)' : 'rgba(139,92,246,0.15)'}`,
                       textAlign: 'center',
                       transition: 'none',
                       position: 'relative',
                       overflow: 'hidden',
                       cursor: 'pointer',
-                      boxShadow: isDarkMode 
-                        ? '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05)' 
-                        : '0 8px 32px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.8)',
+                      boxShadow: isDarkMode
+                        ? '0 16px 50px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1)'
+                        : '0 16px 50px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,1)',
                       transformStyle: 'preserve-3d',
                       perspective: '1200px'
                     }}
@@ -3042,7 +3042,7 @@ const AnimatedCounter = ({
                       }} />
                     
                     {/* Floating Particles Container */}
-                    <div 
+                    <div
                       className="card-particles"
                       style={{
                         position: 'absolute',
@@ -3051,70 +3051,86 @@ const AnimatedCounter = ({
                         overflow: 'hidden'
                       }}
                     />
-                    
-                    <div 
-                      className="card-icon"
-                      style={{
-                        fontSize: '3rem',
-                        marginBottom: '20px',
-                        filter: 'drop-shadow(0 8px 20px rgba(0,0,0,0.2))',
-                        transition: 'none',
-                        position: 'relative',
-                        zIndex: 2,
-                        display: 'inline-block'
-                      }}
-                    >
-                      {item.icon}
-                    </div>
-                    <h3 style={{
-                      fontSize: '1.25rem',
-                      fontWeight: '800',
-                      marginBottom: '14px',
-                      color: isDarkMode ? '#ffffff' : '#0f172a',
-                      letterSpacing: '-0.03em',
-                      lineHeight: '1.3',
+
+                    {/* Content Container with proper alignment */}
+                    <div style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      height: '100%',
                       position: 'relative',
-                      zIndex: 2,
-                      transition: 'none',
-                      textShadow: isDarkMode ? '0 2px 10px rgba(0,0,0,0.3)' : 'none'
+                      zIndex: 2
                     }}>
-                      {item.title}
-                    </h3>
-                    <p style={{
-                      fontSize: '0.9rem',
-                      color: isDarkMode ? '#cbd5e1' : '#475569',
-                      lineHeight: '1.7',
-                      letterSpacing: '-0.01em',
-                      marginBottom: '20px',
-                      position: 'relative',
-                      zIndex: 2,
-                      transition: 'none'
-                    }}>
-                      {item.description}
-                    </p>
-                    <div 
-                      className="card-stats"
-                      style={{
-                        fontSize: '0.75rem',
+                      <div
+                        className="card-icon"
+                        style={{
+                          fontSize: '2.2rem',
+                          marginBottom: '14px',
+                          filter: 'drop-shadow(0 8px 20px rgba(0,0,0,0.2))',
+                          transition: 'none',
+                          position: 'relative',
+                          zIndex: 2,
+                          display: 'inline-block'
+                        }}
+                      >
+                        {item.icon}
+                      </div>
+                      <h3 style={{
+                        fontSize: '1.2rem',
                         fontWeight: '800',
-                        color: isDarkMode ? '#8b5cf6' : '#6366f1',
-                        letterSpacing: '0.1em',
-                        textTransform: 'uppercase',
-                        background: isDarkMode 
-                          ? 'rgba(99,102,241,0.15)' 
-                          : 'rgba(99,102,241,0.08)',
-                        padding: '12px 20px',
-                        borderRadius: '16px',
-                        display: 'inline-block',
+                        marginBottom: '10px',
+                        color: isDarkMode ? '#ffffff' : '#0f172a',
+                        letterSpacing: '-0.02em',
+                        lineHeight: '1.3',
                         position: 'relative',
                         zIndex: 2,
                         transition: 'none',
-                        boxShadow: isDarkMode ? '0 4px 20px rgba(99,102,241,0.25)' : '0 4px 20px rgba(99,102,241,0.15)',
-                        border: `1px solid ${isDarkMode ? 'rgba(99,102,241,0.2)' : 'rgba(99,102,241,0.1)'}`
-                      }}
-                    >
-                      {item.stats}
-                  </div>
+                        textShadow: isDarkMode ? '0 2px 10px rgba(0,0,0,0.3)' : 'none',
+                        textAlign: 'center',
+                        width: '100%'
+                      }}>
+                        {item.title}
+                      </h3>
+                      <p style={{
+                        fontSize: '0.9rem',
+                        color: isDarkMode ? '#e2e8f0' : '#334155',
+                        lineHeight: '1.6',
+                        letterSpacing: '-0.005em',
+                        marginBottom: '14px',
+                        position: 'relative',
+                        zIndex: 2,
+                        transition: 'none',
+                        fontWeight: '500',
+                        textAlign: 'center',
+                        width: '100%'
+                      }}>
+                        {item.description}
+                      </p>
+                      <div
+                        className="card-stats"
+                        style={{
+                          fontSize: '0.8rem',
+                          fontWeight: '800',
+                          color: isDarkMode ? '#a78bfa' : '#7c3aed',
+                          letterSpacing: '0.1em',
+                          textTransform: 'uppercase',
+                          background: isDarkMode
+                            ? 'rgba(139,92,246,0.25)'
+                            : 'rgba(139,92,246,0.12)',
+                          padding: '12px 18px',
+                          borderRadius: '14px',
+                          display: 'inline-block',
+                          position: 'relative',
+                          zIndex: 2,
+                          transition: 'none',
+                          boxShadow: isDarkMode ? '0 6px 20px rgba(139,92,246,0.3)' : '0 6px 20px rgba(139,92,246,0.2)',
+                          border: `1px solid ${isDarkMode ? 'rgba(139,92,246,0.35)' : 'rgba(139,92,246,0.2)'}`
+                        }}
+                      >
+                        {item.stats}
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
