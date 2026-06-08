@@ -515,158 +515,63 @@ const AppProfessional = ({ isDarkMode: propIsDarkMode, setIsDarkMode: propSetIsD
         );
       }
 
-      // Services Section - Exact Animation Requirements
+      // Services Section - Professional Animation
       const servicesSection = document.querySelector('.services-section');
       const serviceCards = document.querySelectorAll('.service-card');
       const servicesTitle = document.querySelector('.services-title');
       const servicesSubtitle = document.querySelector('.services-subtitle');
-      
+
       if (servicesSection && serviceCards.length > 0) {
         // Set initial states
-        gsap.set(serviceCards, { 
-          y: -300, 
-          opacity: 0, 
-          scale: 0.8,
-          rotationX: -15,
-          zIndex: 1
+        gsap.set(serviceCards, {
+          y: 60,
+          opacity: 0,
+          scale: 0.95
         });
-        gsap.set(servicesTitle, { y: 60, opacity: 0 });
-        gsap.set(servicesSubtitle, { y: 40, opacity: 0 });
-        
-        // Create the main timeline with pinning
-        const servicesScrollTl = gsap.timeline({
+        gsap.set(servicesTitle, { y: 40, opacity: 0 });
+        gsap.set(servicesSubtitle, { y: 30, opacity: 0 });
+
+        // Title and subtitle entrance - no pinning, stays visible
+        gsap.to(servicesTitle, {
+          y: 0,
+          opacity: 1,
+          duration: 1.2,
+          ease: "power3.out",
           scrollTrigger: {
             trigger: servicesSection,
-            start: "top top",
-            end: "+=150%", // Much less scroll distance
-            scrub: 1, // Normal scroll speed
-            pin: true,
-            anticipatePin: 1,
-            snap: {
-              snapTo: 1 / (serviceCards.length + 2),
-              duration: { min: 0.3, max: 0.6 },
-              ease: "power2.inOut"
-            }
+            start: "top 80%",
+            toggleActions: "play none none reverse"
           }
         });
-        
-        // Step 1: Title appears
-        servicesScrollTl.to(servicesTitle, {
+
+        gsap.to(servicesSubtitle, {
           y: 0,
           opacity: 1,
-          duration: 1.5,
-          ease: "power2.inOut"
+          duration: 1.0,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: servicesSection,
+            start: "top 75%",
+            toggleActions: "play none none reverse"
+          }
         });
-        
-        servicesScrollTl.to(servicesSubtitle, {
+
+        // Cards entrance - staggered, below title
+        gsap.to(serviceCards, {
           y: 0,
           opacity: 1,
-          duration: 1.2,
-          ease: "power2.inOut"
-        }, "-=0.8");
-        
-        // Step 2: Card 1 comes from top, takes title place
-        servicesScrollTl.to(serviceCards[0], {
-          y: -50,
-          opacity: 1,
           scale: 1,
-          rotationX: 0,
-          zIndex: 10,
-          duration: 1.2,
-          ease: "power2.inOut"
-        }, "+=0.5");
-        
-        // Title fades out as Card 1 takes its place
-        servicesScrollTl.to([servicesTitle, servicesSubtitle], {
-          y: -50,
-          opacity: 0,
-          scale: 0.9,
           duration: 0.8,
-          ease: "power2.inOut"
-        }, "-=0.8");
-        
-        // Step 3: Card 2 overlaps
-        servicesScrollTl.to(serviceCards[1], {
-          y: -30,
-          opacity: 1,
-          scale: 1,
-          rotationX: 0,
-          zIndex: 8,
-          duration: 1,
-          ease: "power2.inOut"
-        }, "+=0.3");
-        
-        // Push Card 1 back
-        servicesScrollTl.to(serviceCards[0], {
-          y: -80,
-          scale: 0.92,
-          opacity: 0.8,
-          zIndex: 5,
-          duration: 0.8,
-          ease: "power2.inOut"
-        }, "-=0.8");
-        
-        // Step 4: Card 3 overlaps
-        servicesScrollTl.to(serviceCards[2], {
-          y: -10,
-          opacity: 1,
-          scale: 1,
-          rotationX: 0,
-          zIndex: 6,
-          duration: 1,
-          ease: "power2.inOut"
-        }, "+=0.3");
-        
-        // Push previous cards back
-        servicesScrollTl.to(serviceCards[0], {
-          y: -100,
-          scale: 0.85,
-          opacity: 0.6,
-          duration: 0.8,
-          ease: "power2.inOut"
-        }, "-=0.8");
-        
-        servicesScrollTl.to(serviceCards[1], {
-          y: -60,
-          scale: 0.92,
-          opacity: 0.8,
-          zIndex: 7,
-          duration: 0.8,
-          ease: "power2.inOut"
-        }, "-=0.8");
-        
-        // Final: All three cards appear together
-        servicesScrollTl.to(serviceCards[0], {
-          y: -120,
-          x: -180,
-          scale: 0.85,
-          opacity: 0.9,
-          rotationY: -8,
-          duration: 1,
-          ease: "power2.inOut"
-        }, "+=0.5");
-        
-        servicesScrollTl.to(serviceCards[1], {
-          y: -120,
-          x: 0,
-          scale: 0.9,
-          opacity: 1,
-          zIndex: 10,
-          duration: 1,
-          ease: "power2.inOut"
-        }, "-=0.8");
-        
-        servicesScrollTl.to(serviceCards[2], {
-          y: -120,
-          x: 180,
-          scale: 0.85,
-          opacity: 0.9,
-          rotationY: 8,
-          duration: 1,
-          ease: "power2.inOut"
-        }, "-=0.8");
+          stagger: 0.15,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: servicesSection,
+            start: "top 70%",
+            toggleActions: "play none none reverse"
+          }
+        });
       }
-      
+
       // Background parallax
       gsap.to(".services-bg", {
         yPercent: -15,
@@ -676,25 +581,6 @@ const AppProfessional = ({ isDarkMode: propIsDarkMode, setIsDarkMode: propSetIsD
           end: "bottom top",
           scrub: 2
         }
-      });
-      
-      // Card click animations - bring clicked card to center
-      serviceCards.forEach((card, index) => {
-        if (!card) return;
-        
-        card.addEventListener('click', () => {
-          // Reset all cards to background
-          gsap.to(serviceCards, {
-            y: (i) => i === index ? -150 : -200,
-            x: (i) => i === index ? 0 : (i - index) * 250,
-            scale: (i) => i === index ? 1.1 : 0.7,
-            opacity: (i) => i === index ? 1 : 0.3,
-            rotationY: (i) => i === index ? 0 : (i - index) * 15,
-            zIndex: (i) => i === index ? 20 : 1,
-            duration: 0.8,
-            ease: "power3.out"
-          });
-        });
       });
 
       // Engage Covert Nurture - Clean Animation System
@@ -2230,32 +2116,36 @@ const AnimatedCounter = ({
 
       {/* Premium Services Section */}
       <section className="services-section" ref={servicesRef} style={{
-        padding: '35px 20px',
-        background: isDarkMode 
+        minHeight: '100vh',
+        padding: '80px 20px 60px',
+        background: isDarkMode
           ? 'linear-gradient(135deg, black 0%, black 50%, black 100%)'
           : 'linear-gradient(135deg, #FFFFFF 0%, #f8fafc 50%, #FFFFFF 100%)',
         position: 'relative',
         zIndex: 1,
-        overflow: 'hidden'
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center'
       }}>
-       
 
-        <div style={{ maxWidth: '1400px', margin: '25px auto', position: 'relative', zIndex: 2 }}>
-          <div style={{ 
-            textAlign: 'center', 
-            marginBottom: '60px',
+
+        <div style={{ maxWidth: '1400px', margin: '0 auto', position: 'relative', zIndex: 2, width: '100%' }}>
+          <div style={{
+            textAlign: 'center',
+            marginBottom: '40px',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            gap: '20px',
+            gap: '16px',
             position: 'relative',
             zIndex: 10
           }}>
             <h2 className="services-title" style={{
-              fontSize: 'clamp(3.5rem, 7vw, 5rem)',
+              fontSize: 'clamp(2.5rem, 5vw, 3.5rem)',
               fontWeight: '900',
               marginBottom: '0',
-              letterSpacing: '-0.04em',
+              letterSpacing: '-0.03em',
               textTransform: 'uppercase',
               lineHeight: '1.1',
               textShadow: '0 4px 20px rgba(255,107,107,0.3)'
@@ -2271,13 +2161,13 @@ const AnimatedCounter = ({
             </h2>
             
             <div className="services-subtitle" style={{
-              fontSize: 'clamp(1.2rem, 2vw, 1.6rem)',
+              fontSize: 'clamp(1rem, 1.8vw, 1.25rem)',
               color: isDarkMode ? '#e2e8f0' : 'black',
               fontWeight: '500',
               marginBottom: '0',
               letterSpacing: '-0.01em',
               maxWidth: '700px',
-              lineHeight: '1.7'
+              lineHeight: '1.6'
             }}>
               Lead generation solutions designed to accelerate your B2B growth and maximize ROI
             </div>
@@ -2287,9 +2177,9 @@ const AnimatedCounter = ({
           <div className="services-grid" style={{
             position: 'relative',
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-            gap: '2px',
-            maxWidth: '1000px',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+            gap: '24px',
+            maxWidth: '1200px',
             margin: '0 auto',
             perspective: '1000px',
             zIndex: 5
@@ -2325,12 +2215,12 @@ const AnimatedCounter = ({
                 className="service-card"
                 ref={el => serviceCardsRef.current[index] = el}
                 style={{
-                  background: isDarkMode 
+                  background: isDarkMode
                     ? 'linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0.12) 100%)'
                     : 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.98) 50%, rgba(255,255,255,0.95) 100%)',
                   backdropFilter: 'blur(30px) saturate(180%)',
                   WebkitBackdropFilter: 'blur(30px) saturate(180%)',
-                  padding: '32px',
+                  padding: '28px',
                   borderRadius: '20px',
                   border: `1px solid ${isDarkMode ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.08)'}`,
                   boxShadow: isDarkMode 
