@@ -36,6 +36,15 @@ if (styleSheet) {
       90% { opacity: 1; }
       100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
     }
+    @keyframes shimmer {
+      0% { left: -100px; }
+      50% { left: 100%; }
+      100% { left: 100%; }
+    }
+    @keyframes glass-pulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
     .premium-gradient {
       background-size: 200% 200%;
       animation: gradient-shift 8s ease infinite;
@@ -115,8 +124,8 @@ const AnimatedTextSection = ({ isDarkMode }) => {
       gsap.set(wordsRef.current, {
         opacity: 0.05,
         y: 30,
-        filter: 'blur(1px)',
-        transform: 'translateY(30px) scale(0.95)',
+        filter: 'blur(3px)',
+        transform: 'translateY(30px) scale(0.92)',
         color: isDarkMode ? '#4ECDC4' : '#0ea5e9'
       });
 
@@ -127,10 +136,10 @@ const AnimatedTextSection = ({ isDarkMode }) => {
         filter: 'blur(0px)',
         transform: 'translateY(0px) scale(1)',
         color: isDarkMode ? 'white' : 'black',
-        duration: 0.2,
-        ease: 'power2.out',
+        duration: 0.3,
+        ease: 'power4.out',
         stagger: {
-          each: 0.01,
+          each: 0.006,
           from: 'start',
           onStart: function() {
             gsap.set(this.targets, { willChange: 'auto' });
@@ -141,9 +150,9 @@ const AnimatedTextSection = ({ isDarkMode }) => {
         },
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: 'top 85%',
-          end: 'bottom 35%',
-          scrub: 0.4,
+          start: 'top 75%',
+          end: 'bottom 25%',
+          scrub: 0.6,
           invalidateOnRefresh: true
         }
       });
@@ -153,10 +162,12 @@ const AnimatedTextSection = ({ isDarkMode }) => {
         if (word) {
           word.addEventListener('mouseenter', () => {
             gsap.to(word, {
-              scale: 1.05,
+              scale: 1.12,
               color: isDarkMode ? '#4ECDC4' : '#0ea5e9',
+              filter: 'brightness(1.3)',
+              y: -3,
               duration: 0.3,
-              ease: 'power2.out'
+              ease: 'power3.out'
             });
           });
 
@@ -164,8 +175,10 @@ const AnimatedTextSection = ({ isDarkMode }) => {
             gsap.to(word, {
               scale: 1,
               color: isDarkMode ? 'white' : 'black',
+              filter: 'brightness(1)',
+              y: 0,
               duration: 0.3,
-              ease: 'power2.out'
+              ease: 'power3.out'
             });
           });
         }
@@ -227,44 +240,51 @@ const AboutUs = ({ isDarkMode, setIsDarkMode, navigate }) => {
     const ctx = gsap.context(() => {
       // Hero Section Animation
       const heroTl = gsap.timeline({
-        defaults: { ease: 'power3.out' }
+        defaults: { ease: 'power4.out' }
       });
 
       heroTl
+        .fromTo('.hero-bg-video',
+          { scale: 1.15, opacity: 0 },
+          { scale: 1, opacity: 1, duration: 2.0, ease: 'power2.out' }
+        )
         .fromTo('.hero-title',
-          { y: 100, opacity: 0, scale: 0.95 },
-          { y: 0, opacity: 1, scale: 1, duration: 1.2 }
+          { y: 100, opacity: 0, scale: 0.88, filter: 'blur(12px)' },
+          { y: 0, opacity: 1, scale: 1, filter: 'blur(0px)', duration: 1.6 },
+          '-=1.4'
         )
         .fromTo('.hero-subtitle',
-          { y: 60, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.8 },
-          '-=0.6'
+          { y: 60, opacity: 0, scale: 0.93, filter: 'blur(10px)' },
+          { y: 0, opacity: 1, scale: 1, filter: 'blur(0px)', duration: 1.2 },
+          '-=1.0'
         )
-        .fromTo('.video-container',
-          { scale: 0.8, opacity: 0, rotation: 5 },
-          { scale: 1, opacity: 1, rotation: 0, duration: 1.0 },
-          '-=0.4'
+        .fromTo('.hero-orb-1, .hero-orb-2',
+          { scale: 0, opacity: 0 },
+          { scale: 1, opacity: 1, duration: 1.5, stagger: 0.2, ease: 'elastic.out(1, 0.5)' },
+          '-=1.8'
         );
 
       // Story Section Animation
       gsap.utils.toArray('.story-card').forEach((card, index) => {
         gsap.fromTo(card,
           {
-            y: 80,
+            y: 60,
             opacity: 0,
-            scale: 0.9
+            scale: 0.92,
+            filter: 'blur(8px)'
           },
           {
             y: 0,
             opacity: 1,
             scale: 1,
-            duration: 0.8,
-            delay: index * 0.2,
-            ease: 'power2.out',
+            filter: 'blur(0px)',
+            duration: 1.0,
+            delay: index * 0.15,
+            ease: 'power3.out',
             scrollTrigger: {
               trigger: card,
-              start: 'top 85%',
-              end: 'bottom 15%',
+              start: 'top 80%',
+              end: 'bottom 20%',
               toggleActions: 'play none none reverse'
             }
           }
@@ -275,19 +295,23 @@ const AboutUs = ({ isDarkMode, setIsDarkMode, navigate }) => {
       gsap.utils.toArray('.timeline-item').forEach((item, index) => {
         gsap.fromTo(item,
           {
-            x: index % 2 === 0 ? -100 : 100,
-            opacity: 0
+            x: index % 2 === 0 ? -80 : 80,
+            opacity: 0,
+            scale: 0.95,
+            filter: 'blur(6px)'
           },
           {
             x: 0,
             opacity: 1,
-            duration: 0.8,
-            delay: index * 0.3,
-            ease: 'power2.out',
+            scale: 1,
+            filter: 'blur(0px)',
+            duration: 1.0,
+            delay: index * 0.2,
+            ease: 'power3.out',
             scrollTrigger: {
               trigger: item,
-              start: 'top 80%',
-              end: 'bottom 20%',
+              start: 'top 75%',
+              end: 'bottom 25%',
               toggleActions: 'play none none reverse'
             }
           }
@@ -304,6 +328,62 @@ const AboutUs = ({ isDarkMode, setIsDarkMode, navigate }) => {
           end: 'bottom top',
           scrub: 1.5
         }
+      });
+
+      // Parallax for Hero Orbs
+      gsap.utils.toArray('.hero-orb-1, .hero-orb-2').forEach((orb, index) => {
+        gsap.to(orb, {
+          y: -50 - (index * 30),
+          ease: 'none',
+          scrollTrigger: {
+            trigger: '.hero-section',
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 2
+          }
+        });
+      });
+
+      // Parallax for Vision Orbs
+      gsap.utils.toArray('.vision-orb-1, .vision-orb-2').forEach((orb, index) => {
+        gsap.to(orb, {
+          y: -40 - (index * 25),
+          ease: 'none',
+          scrollTrigger: {
+            trigger: '.vision-section',
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 2.5
+          }
+        });
+      });
+
+      // Parallax for Strategy Orbs
+      gsap.utils.toArray('.strategy-orb-1, .strategy-orb-2').forEach((orb, index) => {
+        gsap.to(orb, {
+          y: -45 - (index * 28),
+          ease: 'none',
+          scrollTrigger: {
+            trigger: '.strategy-section',
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 2.5
+          }
+        });
+      });
+
+      // Parallax for CTA Orbs
+      gsap.utils.toArray('.cta-orb-1, .cta-orb-2').forEach((orb, index) => {
+        gsap.to(orb, {
+          y: -35 - (index * 20),
+          ease: 'none',
+          scrollTrigger: {
+            trigger: '.cta-section',
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 2.5
+          }
+        });
       });
 
       // Helper function to safely animate elements
@@ -399,6 +479,44 @@ const AboutUs = ({ isDarkMode, setIsDarkMode, navigate }) => {
 
       if (visionSection.length > 0) {
         safeFloat(visionOrbs, 5);
+
+        // Vision section entrance with staggered elements
+        gsap.fromTo('.vision-section > div > div:first-child', {
+          opacity: 0,
+          y: 40,
+          scale: 0.95
+        }, {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 1.2,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: visionSection[0],
+            start: 'top 80%',
+            toggleActions: 'play none none reverse'
+          }
+        });
+
+        // Animated text container entrance
+        gsap.fromTo('.vision-section .animated-word', {
+          opacity: 0,
+          y: 20,
+          filter: 'blur(2px)'
+        }, {
+          opacity: 1,
+          y: 0,
+          filter: 'blur(0px)',
+          duration: 0.8,
+          ease: 'power2.out',
+          stagger: 0.02,
+          scrollTrigger: {
+            trigger: visionSection[0],
+            start: 'top 70%',
+            toggleActions: 'play none none reverse'
+          }
+        });
+
         safeAnimate(sectionTitle, {
           from: { opacity: 0, y: 50, scale: 0.95 },
           to: { opacity: 1, y: 0, scale: 1, duration: 1.3, ease: 'power3.out' }
@@ -413,14 +531,32 @@ const AboutUs = ({ isDarkMode, setIsDarkMode, navigate }) => {
       if (strategySection.length > 0) {
         safeFloat(strategyOrbs, 6);
 
+        // Strategy section header entrance
+        gsap.fromTo('.strategy-section > div > div:first-child', {
+          opacity: 0,
+          y: 45,
+          scale: 0.94
+        }, {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 1.3,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: strategySection[0],
+            start: 'top 80%',
+            toggleActions: 'play none none reverse'
+          }
+        });
+
         // Premium Interactive Cards Animation
         if (premiumCards.length > 0) {
           safeSet(premiumCards, {
             opacity: 0,
-            y: 100,
+            y: 70,
             scale: 0.9,
             filter: 'blur(8px)',
-            rotateX: 5
+            rotateY: 15
           });
 
           gsap.to(premiumCards, {
@@ -428,14 +564,38 @@ const AboutUs = ({ isDarkMode, setIsDarkMode, navigate }) => {
             y: 0,
             scale: 1,
             filter: 'blur(0px)',
-            rotateX: 0,
-            duration: 1.2,
-            ease: 'power3.out',
-            stagger: 0.25,
+            rotateY: 0,
+            duration: 1.1,
+            ease: 'power4.out',
+            stagger: 0.18,
             scrollTrigger: {
               trigger: strategySection[0],
               start: 'top 75%',
+              end: 'bottom 25%',
               toggleActions: 'play none none reverse'
+            }
+          });
+
+          // Add icon animation within cards
+          premiumCards.forEach((card) => {
+            const icon = card.querySelector('.card-icon');
+            if (icon) {
+              gsap.fromTo(icon, {
+                scale: 0,
+                rotation: -180,
+                opacity: 0
+              }, {
+                scale: 1,
+                rotation: 0,
+                opacity: 1,
+                duration: 0.8,
+                ease: 'back.out(1.7)',
+                scrollTrigger: {
+                  trigger: card,
+                  start: 'top 85%',
+                  toggleActions: 'play none none reverse'
+                }
+              });
             }
           });
         }
@@ -451,19 +611,59 @@ const AboutUs = ({ isDarkMode, setIsDarkMode, navigate }) => {
       if (ctaSection.length > 0) {
         safeFloat(ctaOrbs, 7);
 
+        // CTA content box entrance
+        gsap.fromTo('.cta-section > div > div > div:nth-child(2)', {
+          opacity: 0,
+          y: 50,
+          scale: 0.92,
+          rotateX: 10
+        }, {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          rotateX: 0,
+          duration: 1.4,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: ctaSection[0],
+            start: 'top 75%',
+            toggleActions: 'play none none reverse'
+          }
+        });
+
+        // Particle entrance animation
+        gsap.fromTo('.cta-particle', {
+          opacity: 0,
+          scale: 0
+        }, {
+          opacity: 0.3,
+          scale: 1,
+          duration: 1.0,
+          stagger: {
+            each: 0.1,
+            from: 'random'
+          },
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: ctaSection[0],
+            start: 'top 80%',
+            toggleActions: 'play none none reverse'
+          }
+        });
+
         safeAnimate(ctaBadge, {
-          from: { opacity: 0, y: -40, scale: 0.85 },
-          to: { opacity: 1, y: 0, scale: 1, duration: 1.2, ease: 'back.out(1.7)' }
+          from: { opacity: 0, y: -30, scale: 0.88 },
+          to: { opacity: 1, y: 0, scale: 1, duration: 1.0, ease: 'back.out(1.5)' }
         }, ctaSection[0]);
 
         safeAnimate(ctaTitle, {
-          from: { opacity: 0, y: 70, scale: 0.92 },
-          to: { opacity: 1, y: 0, scale: 1, duration: 1.6, ease: 'power3.out' }
+          from: { opacity: 0, y: 50, scale: 0.94 },
+          to: { opacity: 1, y: 0, scale: 1, duration: 1.3, ease: 'power3.out' }
         }, ctaSection[0]);
 
         safeAnimate(ctaButton, {
-          from: { opacity: 0, y: 50, scale: 0.9 },
-          to: { opacity: 1, y: 0, scale: 1, duration: 1.1, delay: 0.8, ease: 'back.out(1.4)' }
+          from: { opacity: 0, y: 40, scale: 0.92, rotate: -5 },
+          to: { opacity: 1, y: 0, scale: 1, rotate: 0, duration: 0.9, delay: 0.6, ease: 'back.out(1.3)' }
         }, ctaSection[0]);
       }
 
@@ -496,12 +696,13 @@ const AboutUs = ({ isDarkMode, setIsDarkMode, navigate }) => {
 
       // Continuous floating animation for all interactive cards
       const allCards = gsap.utils.toArray('.interactive-card, .premium-interactive-card');
-      
+
       allCards.forEach((card, index) => {
         if (card) {
-          const duration = 3 + (index * 0.5); // 3-5 seconds varying duration
+          const duration = 4 + (index * 0.3); // 4-5 seconds varying duration
           gsap.to(card, {
-            y: -10,
+            y: -6,
+            rotation: index % 2 === 0 ? 1 : -1,
             duration: duration,
             repeat: -1,
             yoyo: true,
@@ -525,17 +726,24 @@ const AboutUs = ({ isDarkMode, setIsDarkMode, navigate }) => {
       gsap.utils.toArray('.section-title').forEach((title) => {
         gsap.fromTo(title,
           {
-            y: 30,
-            opacity: 0
+            y: 50,
+            opacity: 0,
+            scale: 0.92,
+            filter: 'blur(5px)',
+            rotationX: 10
           },
           {
             y: 0,
             opacity: 1,
-            duration: 1,
-            ease: 'power3.out',
+            scale: 1,
+            filter: 'blur(0px)',
+            rotationX: 0,
+            duration: 1.4,
+            ease: 'power4.out',
             scrollTrigger: {
               trigger: title,
-              start: 'top 85%',
+              start: 'top 80%',
+              end: 'bottom 20%',
               toggleActions: 'play none none reverse'
             }
           }
@@ -716,7 +924,7 @@ const AboutUs = ({ isDarkMode, setIsDarkMode, navigate }) => {
           borderRadius: '50%',
           background: 'radial-gradient(circle, rgba(255,140,66,0.3) 0%, transparent 70%)',
           filter: 'blur(60px)',
-          animation: 'float 8s ease-in-out infinite'
+          animation: 'float 8s ease-in-out infinite, pulse-glow 4s ease-in-out infinite'
         }} />
         <div className="hero-orb-2" style={{
           position: 'absolute',
@@ -727,7 +935,7 @@ const AboutUs = ({ isDarkMode, setIsDarkMode, navigate }) => {
           borderRadius: '50%',
           background: 'radial-gradient(circle, rgba(78,205,196,0.25) 0%, transparent 70%)',
           filter: 'blur(55px)',
-          animation: 'float 10s ease-in-out infinite reverse'
+          animation: 'float 10s ease-in-out infinite reverse, pulse-glow 5s ease-in-out infinite reverse'
         }} />
 
         {/* Floating Particles */}
@@ -804,10 +1012,10 @@ const AboutUs = ({ isDarkMode, setIsDarkMode, navigate }) => {
 
       {/* Premium Vision Section */}
       <section className="vision-section" style={{
-        padding: '40px 20px',
+        padding: '80px 40px',
         position: 'relative',
         zIndex: 1,
-        background: isDarkMode 
+        background: isDarkMode
           ? 'linear-gradient(135deg, black 0%, black 25%, black 50%, black 100%)'
           : 'linear-gradient(135deg, white 0%, white 50%, white 100%)',
         overflow: 'hidden'
@@ -833,7 +1041,7 @@ const AboutUs = ({ isDarkMode, setIsDarkMode, navigate }) => {
           borderRadius: '50%',
           background: 'radial-gradient(circle, rgba(255,140,66,0.15) 0%, transparent 70%)',
           filter: 'blur(50px)',
-          animation: 'float 12s ease-in-out infinite'
+          animation: 'float 12s ease-in-out infinite, pulse-glow 6s ease-in-out infinite'
         }} />
         <div className="vision-orb-2" style={{
           position: 'absolute',
@@ -844,7 +1052,7 @@ const AboutUs = ({ isDarkMode, setIsDarkMode, navigate }) => {
           borderRadius: '50%',
           background: 'radial-gradient(circle, rgba(78,205,196,0.12) 0%, transparent 70%)',
           filter: 'blur(45px)',
-          animation: 'float 15s ease-in-out infinite reverse'
+          animation: 'float 15s ease-in-out infinite reverse, pulse-glow 7s ease-in-out infinite reverse'
         }} />
 
         <div style={{ maxWidth: '1400px', margin: '0 auto', position: 'relative', zIndex: 2 }}>
@@ -885,15 +1093,26 @@ const AboutUs = ({ isDarkMode, setIsDarkMode, navigate }) => {
 
           {/* Premium Animated Text Component */}
           <div style={{
-            background: isDarkMode 
+            background: isDarkMode
               ? 'linear-gradient(135deg, rgba(15,23,42,0.15) 0%, rgba(30,41,59,0.08) 50%, rgba(15,23,42,0.15) 100%)'
               : 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,250,252,0.95) 50%, rgba(255,255,255,0.9) 100%)',
             backdropFilter: 'blur(25px)',
             padding: '60px',
             borderRadius: '32px',
             border: `1px solid ${isDarkMode ? 'rgba(78,205,196,0.2)' : 'rgba(0,0,0,0.08)'}`,
-            boxShadow: `0 25px 80px ${isDarkMode ? 'rgba(0,0,0,0.5)' : 'rgba(0,0,0,0.15)'}`
-          }}>
+            boxShadow: `0 25px 80px ${isDarkMode ? 'rgba(0,0,0,0.5)' : 'rgba(0,0,0,0.15)'}`,
+            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+            cursor: 'default'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'translateY(-4px) scale(1.01)';
+            e.currentTarget.style.boxShadow = `0 30px 100px ${isDarkMode ? 'rgba(0,0,0,0.6)' : 'rgba(0,0,0,0.2)'}`;
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'translateY(0) scale(1)';
+            e.currentTarget.style.boxShadow = `0 25px 80px ${isDarkMode ? 'rgba(0,0,0,0.5)' : 'rgba(0,0,0,0.15)'}`;
+          }}
+          >
             <AnimatedTextSection isDarkMode={isDarkMode} />
           </div>
         </div>
@@ -901,10 +1120,10 @@ const AboutUs = ({ isDarkMode, setIsDarkMode, navigate }) => {
 
       {/* Premium Strategy Section */}
       <section className="strategy-section" style={{
-        padding: '50px 40px',
+        padding: '100px 40px',
         position: 'relative',
         zIndex: 1,
-        background: isDarkMode 
+        background: isDarkMode
           ? 'linear-gradient(135deg, black 0%, black 50%, black 100%)'
           : 'linear-gradient(135deg, white 0%, white 50%, white 100%)',
         overflow: 'hidden'
@@ -930,7 +1149,7 @@ const AboutUs = ({ isDarkMode, setIsDarkMode, navigate }) => {
           borderRadius: '50%',
           background: 'radial-gradient(circle, rgba(255,107,107,0.18) 0%, transparent 70%)',
           filter: 'blur(55px)',
-          animation: 'float 10s ease-in-out infinite'
+          animation: 'float 10s ease-in-out infinite, pulse-glow 5s ease-in-out infinite'
         }} />
         <div className="strategy-orb-2" style={{
           position: 'absolute',
@@ -941,7 +1160,7 @@ const AboutUs = ({ isDarkMode, setIsDarkMode, navigate }) => {
           borderRadius: '50%',
           background: 'radial-gradient(circle, rgba(78,205,196,0.15) 0%, transparent 70%)',
           filter: 'blur(50px)',
-          animation: 'float 14s ease-in-out infinite reverse'
+          animation: 'float 14s ease-in-out infinite reverse, pulse-glow 6s ease-in-out infinite reverse'
         }} />
 
         <div style={{ maxWidth: '1400px', margin: '0 auto', position: 'relative', zIndex: 2 }}>
@@ -983,8 +1202,10 @@ const AboutUs = ({ isDarkMode, setIsDarkMode, navigate }) => {
           {/* Premium Interactive Cards */}
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
-            gap: '50px'
+            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+            gap: '30px',
+            maxWidth: '1100px',
+            margin: '0 auto'
           }}>
             {[
               {
@@ -1015,48 +1236,52 @@ const AboutUs = ({ isDarkMode, setIsDarkMode, navigate }) => {
                 onMouseEnter={(e) => {
                   const card = e.currentTarget;
                   card.style.transform = 'translateY(-8px) scale(1.02)';
-                  card.style.boxShadow = `0 20px 40px ${isDarkMode ? 'rgba(0,0,0,0.3)' : 'rgba(0,0,0,0.15)'}`;
-                  
+                  card.style.boxShadow = `0 20px 40px ${isDarkMode ? 'rgba(0,0,0,0.35)' : 'rgba(0,0,0,0.18)'}`;
+
                   const glow = card.querySelector('.card-glow');
                   if (glow) {
                     glow.style.opacity = '0.8';
                   }
-                  
+
                   const icon = card.querySelector('.card-icon');
                   if (icon) {
-                    icon.style.transform = 'scale(1.1)';
+                    icon.style.transform = 'scale(1.1) translateY(-4px)';
                   }
                 }}
                 onMouseLeave={(e) => {
                   const card = e.currentTarget;
                   card.style.transform = 'translateY(0) scale(1)';
                   card.style.boxShadow = 'none';
-                  
+
                   const glow = card.querySelector('.card-glow');
                   if (glow) {
-                    glow.style.opacity = '0.3';
+                    glow.style.opacity = '0.5';
                   }
-                  
+
                   const icon = card.querySelector('.card-icon');
                   if (icon) {
-                    icon.style.transform = 'scale(1)';
+                    icon.style.transform = 'scale(1) translateY(0)';
                   }
                 }}
                 style={{
-                  background: isDarkMode 
+                  background: isDarkMode
                     ? 'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.04) 50%, rgba(255,255,255,0.08) 100%)'
                     : 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.98) 50%, rgba(255,255,255,0.95) 100%)',
                   backdropFilter: 'blur(20px)',
-                  padding: '40px',
-                  borderRadius: '24px',
+                  padding: '32px',
+                  borderRadius: '20px',
                   border: `1px solid ${isDarkMode ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.08)'}`,
                   position: 'relative',
                   overflow: 'hidden',
                   willChange: 'transform',
                   transformStyle: 'preserve-3d',
-                  transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                  transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
                   cursor: 'pointer',
-                  boxShadow: 'none'
+                  boxShadow: 'none',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'flex-start',
+                  minHeight: '280px'
                 }}
               >
                 {/* Card Background Animation */}
@@ -1066,11 +1291,25 @@ const AboutUs = ({ isDarkMode, setIsDarkMode, navigate }) => {
                   left: '-50%',
                   width: '200%',
                   height: '200%',
-                  background: `radial-gradient(circle, ${item.color}15 0%, transparent 70%)`,
+                  background: isDarkMode
+                    ? 'linear-gradient(135deg, rgba(255,255,255,0.03) 0%, transparent 50%, rgba(255,255,255,0.03) 100%)'
+                    : 'linear-gradient(135deg, rgba(255,255,255,0.5) 0%, transparent 50%, rgba(255,255,255,0.5) 100%)',
                   animation: 'rotate 25s linear infinite',
                   pointerEvents: 'none'
                 }} />
-                
+
+                {/* Glass Shimmer Effect */}
+                <div style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: -100,
+                  width: '100px',
+                  height: '100%',
+                  background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent)',
+                  animation: 'shimmer 3s ease-in-out infinite',
+                  pointerEvents: 'none'
+                }} />
+
                 {/* Card Glow Effect */}
                 <div className="card-glow" style={{
                   position: 'absolute',
@@ -1078,61 +1317,95 @@ const AboutUs = ({ isDarkMode, setIsDarkMode, navigate }) => {
                   left: 0,
                   right: 0,
                   bottom: 0,
-                  background: item.gradient,
-                  opacity: 0.3,
-                  transition: 'opacity 0.4s ease',
+                  background: isDarkMode
+                    ? 'linear-gradient(135deg, rgba(255,255,255,0.02) 0%, transparent 50%, rgba(255,255,255,0.02) 100%)'
+                    : 'linear-gradient(135deg, rgba(255,255,255,0.3) 0%, transparent 50%, rgba(255,255,255,0.3) 100%)',
+                  opacity: 0.5,
+                  transition: 'opacity 0.5s ease',
                   pointerEvents: 'none',
-                  borderRadius: '24px'
+                  borderRadius: '20px'
                 }} />
-                
+
                 {/* Card Top Border */}
                 <div style={{
                   position: 'absolute',
                   top: 0,
                   left: 0,
                   right: 0,
-                  height: '4px',
-                  background: item.gradient,
-                  borderRadius: '24px 24px 0 0'
+                  height: '3px',
+                  background: isDarkMode ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.08)',
+                  borderRadius: '20px 20px 0 0'
+                }} />
+
+                {/* Glass Reflection Effect */}
+                <div style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: '50%',
+                  background: 'linear-gradient(180deg, rgba(255,255,255,0.05) 0%, transparent 100%)',
+                  pointerEvents: 'none',
+                  borderRadius: '20px 20px 0 0'
+                }} />
+
+                {/* Pulsing Border Effect */}
+                <div style={{
+                  position: 'absolute',
+                  top: -2,
+                  left: -2,
+                  right: -2,
+                  bottom: -2,
+                  borderRadius: '22px',
+                  background: isDarkMode
+                    ? 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0.1) 100%)'
+                    : 'linear-gradient(135deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.02) 50%, rgba(0,0,0,0.05) 100%)',
+                  animation: 'glass-pulse 4s ease-in-out infinite',
+                  pointerEvents: 'none',
+                  zIndex: -1
                 }} />
                 
                 {/* Icon */}
-                <div 
+                <div
                   className="card-icon"
                   style={{
-                    fontSize: '3.5rem',
-                    marginBottom: '24px',
-                    filter: `drop-shadow(0 8px 16px ${item.color}40)`,
-                    transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                    fontSize: '2.8rem',
+                    marginBottom: '20px',
+                    filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.15))',
+                    transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
                     position: 'relative',
-                    zIndex: 2
+                    zIndex: 2,
+                    alignSelf: 'flex-start'
                   }}
                 >
                   {item.icon}
                 </div>
-                
+
                 {/* Title */}
                 <h3 style={{
-                  fontSize: '1.6rem',
+                  fontSize: '1.35rem',
                   fontWeight: '700',
-                  marginBottom: '20px',
+                  marginBottom: '16px',
                   color: isDarkMode ? '#ffffff' : '#0f172a',
                   letterSpacing: '-0.02em',
                   lineHeight: '1.3',
                   position: 'relative',
-                  zIndex: 2
+                  zIndex: 2,
+                  alignSelf: 'flex-start'
                 }}>
                   {item.title}
                 </h3>
-                
+
                 {/* Description */}
                 <p style={{
-                  fontSize: '1.05rem',
-                  lineHeight: '1.7',
+                  fontSize: '0.95rem',
+                  lineHeight: '1.6',
                   color: isDarkMode ? '#cbd5e1' : '#475569',
                   letterSpacing: '-0.01em',
                   position: 'relative',
-                  zIndex: 2
+                  zIndex: 2,
+                  alignSelf: 'flex-start',
+                  flex: 1
                 }}>
                   {item.description}
                 </p>
@@ -1144,11 +1417,11 @@ const AboutUs = ({ isDarkMode, setIsDarkMode, navigate }) => {
 
       {/* Premium Final CTA Section */}
       <section className="cta-section" style={{
-        padding: '50px 40px',
+        padding: '80px 40px',
         position: 'relative',
         zIndex: 1,
         textAlign: 'center',
-        background: isDarkMode 
+        background: isDarkMode
           ? 'linear-gradient(135deg, black 0%, black 40%, black 80%, black 100%)'
           : 'linear-gradient(135deg, white 0%, white 40%, white 80%, white 100%)',
         overflow: 'hidden'
@@ -1169,23 +1442,23 @@ const AboutUs = ({ isDarkMode, setIsDarkMode, navigate }) => {
           position: 'absolute',
           top: '15%',
           right: '12%',
-          width: '450px',
-          height: '450px',
+          width: '350px',
+          height: '350px',
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(255,140,66,0.25) 0%, rgba(255,140,66,0.05) 40%, transparent 70%)',
-          filter: 'blur(65px)',
-          animation: 'float 18s ease-in-out infinite'
+          background: 'radial-gradient(circle, rgba(255,140,66,0.2) 0%, rgba(255,140,66,0.04) 40%, transparent 70%)',
+          filter: 'blur(50px)',
+          animation: 'float 18s ease-in-out infinite, pulse-glow 8s ease-in-out infinite'
         }} />
         <div className="cta-orb-2" style={{
           position: 'absolute',
           bottom: '20%',
           left: '10%',
-          width: '400px',
-          height: '400px',
+          width: '300px',
+          height: '300px',
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(78,205,196,0.22) 0%, rgba(78,205,196,0.04) 40%, transparent 70%)',
-          filter: 'blur(60px)',
-          animation: 'float 22s ease-in-out infinite reverse'
+          background: 'radial-gradient(circle, rgba(78,205,196,0.18) 0%, rgba(78,205,196,0.04) 40%, transparent 70%)',
+          filter: 'blur(45px)',
+          animation: 'float 22s ease-in-out infinite reverse, pulse-glow 9s ease-in-out infinite reverse'
         }} />
         
         {/* Floating Particles */}
@@ -1198,39 +1471,39 @@ const AboutUs = ({ isDarkMode, setIsDarkMode, navigate }) => {
           zIndex: 1,
           pointerEvents: 'none'
         }}>
-          {[...Array(12)].map((_, i) => (
+          {[...Array(8)].map((_, i) => (
             <div
               key={i}
               className="cta-particle"
               style={{
                 position: 'absolute',
-                width: '6px',
-                height: '6px',
+                width: '4px',
+                height: '4px',
                 borderRadius: '50%',
                 background: i % 3 === 0 ? '#FF8C42' : i % 3 === 1 ? '#4ECDC4' : '#FF6B6B',
-                opacity: 0.4,
-                left: `${5 + (i * 8)}%`,
-                top: `${10 + (i * 7)}%`,
-                animation: `particle-float ${20 + (i * 3)}s linear infinite`,
-                animationDelay: `${i * 1.5}s`
+                opacity: 0.3,
+                left: `${8 + (i * 10)}%`,
+                top: `${15 + (i * 8)}%`,
+                animation: `particle-float ${18 + (i * 2)}s linear infinite`,
+                animationDelay: `${i * 1}s`
               }}
             />
           ))}
         </div>
 
-        <div style={{ maxWidth: '1400px', margin: '0 auto', position: 'relative', zIndex: 2 }}>
-          
+        <div style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 2 }}>
+
           <h2 className="cta-title" style={{
-            fontSize: 'clamp(3rem, 7vw, 4.5rem)',
-            fontWeight: '900',
-            marginBottom: '48px',
+            fontSize: 'clamp(2.5rem, 5vw, 3.5rem)',
+            fontWeight: '800',
+            marginBottom: '32px',
             background: 'linear-gradient(135deg, #FF8C42 0%, #FF6B6B 35%, #4ECDC4 65%, #FFA500 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
-            letterSpacing: '-0.05em',
-            lineHeight: '1.1',
-            textShadow: '0 8px 32px rgba(255,140,66,0.3)',
+            letterSpacing: '-0.04em',
+            lineHeight: '1.2',
+            textShadow: '0 4px 20px rgba(255,140,66,0.25)',
             position: 'relative'
           }}>
             <TextType 
@@ -1246,43 +1519,53 @@ const AboutUs = ({ isDarkMode, setIsDarkMode, navigate }) => {
           <div style={{
             display: 'flex',
             flexDirection: 'column',
-            gap: '40px',
+            gap: '32px',
             alignItems: 'center',
-            maxWidth: '1000px',
+            maxWidth: '900px',
             margin: '0 auto'
           }}>
             <div style={{
-              background: isDarkMode 
+              background: isDarkMode
                 ? 'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.04) 50%, rgba(255,255,255,0.08) 100%)'
                 : 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,250,252,0.95) 50%, rgba(255,255,255,0.9) 100%)',
               backdropFilter: 'blur(25px)',
-              padding: '48px',
-              borderRadius: '32px',
+              padding: '36px',
+              borderRadius: '24px',
               border: `1px solid ${isDarkMode ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.08)'}`,
-              boxShadow: `0 25px 80px ${isDarkMode ? 'rgba(0,0,0,0.4)' : 'rgba(0,0,0,0.15)'}`
-            }}>
-              <p style={{
-                fontSize: 'clamp(1.2rem, 2.5vw, 1.5rem)',
-                lineHeight: '1.8',
-                color: isDarkMode ? '#e2e8f0' : '#475569',
-                letterSpacing: '-0.02em',
-                fontWeight: '400',
-                marginBottom: '32px'
-              }}>
-                Together with our clients, we build differentiated B2B brands with fresh ideas that challenge convention, unexpected design that surprises and delights, and engaging experiences along the customer journey. We combine strong expertise across consulting, media activation and data functions to drive unified customer experiences across strategic audiences and accounts.
-              </p>
-              
-              <div style={{
-                width: '100px',
-                height: '3px',
-                background: 'linear-gradient(135deg, #FF8C42 0%, #FF6B6B 50%, #4ECDC4 100%)',
-                margin: '32px auto',
-                borderRadius: '2px'
-              }} />
-              
+              boxShadow: `0 20px 60px ${isDarkMode ? 'rgba(0,0,0,0.35)' : 'rgba(0,0,0,0.12)'}`,
+              transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-6px) scale(1.02)';
+              e.currentTarget.style.boxShadow = `0 30px 80px ${isDarkMode ? 'rgba(0,0,0,0.45)' : 'rgba(0,0,0,0.18)'}`;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0) scale(1)';
+              e.currentTarget.style.boxShadow = `0 20px 60px ${isDarkMode ? 'rgba(0,0,0,0.35)' : 'rgba(0,0,0,0.12)'}`;
+            }}
+            >
               <p style={{
                 fontSize: 'clamp(1.1rem, 2vw, 1.3rem)',
                 lineHeight: '1.7',
+                color: isDarkMode ? '#e2e8f0' : '#475569',
+                letterSpacing: '-0.02em',
+                fontWeight: '400',
+                marginBottom: '24px'
+              }}>
+                Together with our clients, we build differentiated B2B brands with fresh ideas that challenge convention, unexpected design that surprises and delights, and engaging experiences along the customer journey. We combine strong expertise across consulting, media activation and data functions to drive unified customer experiences across strategic audiences and accounts.
+              </p>
+
+              <div style={{
+                width: '80px',
+                height: '3px',
+                background: 'linear-gradient(135deg, #FF8C42 0%, #FF6B6B 50%, #4ECDC4 100%)',
+                margin: '24px auto',
+                borderRadius: '2px'
+              }} />
+
+              <p style={{
+                fontSize: 'clamp(1rem, 1.8vw, 1.15rem)',
+                lineHeight: '1.6',
                 color: isDarkMode ? '#cbd5e1' : '#64748b',
                 letterSpacing: '-0.01em',
                 fontWeight: '500',
@@ -1297,28 +1580,28 @@ const AboutUs = ({ isDarkMode, setIsDarkMode, navigate }) => {
               className="cta-button"
               onMouseEnter={(e) => {
                 const btn = e.currentTarget;
-                btn.style.transform = 'translateY(-4px) scale(1.05)';
-                btn.style.boxShadow = `0 20px 40px ${isDarkMode ? 'rgba(255,140,66,0.4)' : 'rgba(255,140,66,0.3)'}`;
+                btn.style.transform = 'translateY(-4px) scale(1.04)';
+                btn.style.boxShadow = `0 20px 40px ${isDarkMode ? 'rgba(255,140,66,0.45)' : 'rgba(255,140,66,0.35)'}`;
               }}
               onMouseLeave={(e) => {
                 const btn = e.currentTarget;
                 btn.style.transform = 'translateY(0) scale(1)';
-                btn.style.boxShadow = `0 10px 25px ${isDarkMode ? 'rgba(255,140,66,0.3)' : 'rgba(255,140,66,0.2)'}`;
+                btn.style.boxShadow = `0 8px 20px ${isDarkMode ? 'rgba(255,140,66,0.25)' : 'rgba(255,140,66,0.18)'}`;
               }}
               onClick={() => navigate('/contact')}
               style={{
-                padding: '20px 48px',
-                fontSize: '1.1rem',
+                padding: '16px 40px',
+                fontSize: '1rem',
                 fontWeight: '700',
-                letterSpacing: '0.05em',
+                letterSpacing: '0.04em',
                 textTransform: 'uppercase',
                 background: 'linear-gradient(135deg, #FF8C42 0%, #FF6B6B 50%, #4ECDC4 100%)',
                 color: '#ffffff',
                 border: 'none',
-                borderRadius: '50px',
+                borderRadius: '40px',
                 cursor: 'pointer',
                 transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                boxShadow: `0 10px 25px ${isDarkMode ? 'rgba(255,140,66,0.3)' : 'rgba(255,140,66,0.2)'}`,
+                boxShadow: `0 8px 20px ${isDarkMode ? 'rgba(255,140,66,0.25)' : 'rgba(255,140,66,0.18)'}`,
                 position: 'relative',
                 overflow: 'hidden'
               }}
